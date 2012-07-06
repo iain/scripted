@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'set'
+require 'optparse'
+require 'scripted'
+
+files = Set.new
+groups = Set.new
+
+parser = OptionParser.new do |opts|
+
+  opts.banner = "Usage: scripted [options] file ..."
+
+  opts.on_tail("-h", "--help", "Shows the available options") do
+    puts opts
+    exit
+  end
+
+  opts.on_tail("-v", "--version", "Shows the version") do
+    puts Scripted::VERSION
+    exit
+  end
+
+  opts.on("-r", "--require a,b", Array, "Which files should be loaded") do |f|
+    files += f
+  end
+
+  opts.on("-g", "--group a,b", Array, "Which groups to run, if you specify none, all will run") do |g|
+    groups += g
+  end
+
+end
+
+begin
+  parser.parse!
+rescue OptionParser::InvalidOption => error
+  puts error
+  puts
+  puts parser
+  exit 1
+end
+
+files.each do |f|
+  file = File.expand_path(f)
+  begin
+    Scripted.instance_eval(File.open(f, 'r:utf-8').read)
+  rescue LoadError => error
+    puts error
+    exit 1
+  end
+end
+
+Scripted.run groups
