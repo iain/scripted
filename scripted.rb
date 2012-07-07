@@ -1,2 +1,2 @@
-run "bundle exec rspec"
-run "bundle exec cucumber"
+run "bundle exec rspec --format progress"
+run "bundle exec cucumber --format progress"
