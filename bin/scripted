@@ -1,15 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'set'
-require 'optparse'
 require 'scripted'
+require 'optparse'
 
-files = Set.new
-groups = Set.new
+config = Scripted.configuration
 
 parser = OptionParser.new do |opts|
-
-  opts.banner = "Usage: scripted [options] file ..."
 
   opts.on_tail("-h", "--help", "Shows the available options") do
     puts opts
@@ -21,33 +17,31 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("-r", "--require a,b", Array, "Which files should be loaded") do |f|
-    files += f
+  opts.on("-r", "--require a,b", Array, "Which files should be loaded") do |file_names|
+    config.config_file(*file_names)
   end
 
-  opts.on("-g", "--group a,b", Array, "Which groups to run, if you specify none, all will run") do |g|
-    groups += g
+  opts.on("-g", "--group a,b", Array, "Which groups to run") do |group_names|
+    config.select_group(*group_names)
+  end
+
+  opts.on("-f", "--format name", "Specify a formatter") do |formatter|
+    config.formatter formatter
+  end
+
+  opts.on("-o", "--out output", "Specify the output of the previously specified formatter") do |out|
+    config.out out
   end
 
 end
 
 begin
   parser.parse!
-rescue OptionParser::InvalidOption => error
-  puts error
-  puts
-  puts parser
+  config.with_default_config_file!
+  config.load_files
+rescue OptionParser::InvalidOption, Scripted::ConfigurationError => error
+  puts "#{error} at #{error.backtrace.first}"
   exit 1
 end
 
-files.each do |f|
-  file = File.expand_path(f)
-  begin
-    Scripted.instance_eval(File.open(f, 'r:utf-8').read)
-  rescue LoadError => error
-    puts error
-    exit 1
-  end
-end
-
-Scripted.run groups
+Scripted.start!

@@ -1,20 +1,27 @@
+require "scripted/error"
 require "scripted/version"
 require "scripted/group"
 require "scripted/command"
 require "scripted/runner"
+require "scripted/configuration"
+
+require "scripted/commands/shell"
+require "scripted/commands/rake"
+require "scripted/commands/ruby"
 
 module Scripted
 
-  def self.run(group_names)
-    Runner.call(groups.values_at(*group_names.map(&:to_s)))
+  def self.start!
   end
 
-  def self.group(name, &block)
-    groups[name].define(&block)
+  # Configure it, just like in the `scripted.rb` file.
+  def self.configure(*args, &block)
+    configuration.evaluate(*args, &block)
   end
 
-  def self.groups
-    @groups ||= Hash.new { |hash, key| hash[key.to_s] = Group.new(key) }
+  def self.configuration
+    @configuration ||= Configuration.new
   end
+
 
 end

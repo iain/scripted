@@ -5,15 +5,59 @@ module Scripted
 
     def initialize(name, &block)
       @name = name
-      instance_eval &block if block
+      define(&block) if block
+    end
+
+    def define(&block)
+      instance_eval &block
     end
 
     def execute
-      @command || @name
+      @command ||= Commands::Shell.new(@name)
     end
 
     def sh(command)
-      @command = command
+      @command = Commands::Shell.new(command)
+    end
+
+    def rake(command)
+      @command = Commands::Rake.new(command)
+    end
+
+    def ruby(&code)
+      @command = Commands::Ruby.new(code)
+    end
+
+    def important!
+      @important = true
+    end
+
+    def important?
+      @important
+    end
+
+    def silent!
+      @silent = true
+    end
+
+    def silent?
+      @silent
+    end
+
+    def unimportant?
+      @unimportant
+    end
+
+    def unimportant!
+      @unimportant = true
+    end
+
+    def forced!
+      @forced = true
+    end
+
+    def forced?
+      @forced
     end
 
   end

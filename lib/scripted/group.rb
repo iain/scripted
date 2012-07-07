@@ -8,11 +8,15 @@ module Scripted
     end
 
     def define(&block)
-      instance_eval &block
+      instance_eval &block if block
     end
 
     def run(name, &block)
       commands << Command.new(name, &block)
+    end
+
+    def parallel(&block)
+      fail "TODO"
     end
 
     def commands
