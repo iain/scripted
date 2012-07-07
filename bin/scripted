@@ -46,4 +46,9 @@ rescue OptionParser::InvalidOption, Scripted::ConfigurationError => error
   exit 1
 end
 
-Scripted.start! *groups
+begin
+  Scripted.start! *groups
+rescue Scripted::RunningFailed => error
+  puts error
+  exit 1
+end
