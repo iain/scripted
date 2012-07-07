@@ -12,8 +12,12 @@ module Scripted
       instance_eval &block
     end
 
-    def execute
-      @command ||= Commands::Shell.new(@name)
+    def executable
+      @command || Commands::Shell.new(@name)
+    end
+
+    def execute!
+      executable.execute!
     end
 
     def sh(command)

@@ -34,15 +34,6 @@ module Scripted
       end
     end
 
-    def select_group(*group_names)
-      @selected_group_names ||= []
-      @selected_group_names += group_names.map(&:to_sym)
-    end
-
-    def selected_group_names
-      @selected_group_names || [:default]
-    end
-
     def formatters
       @formatters ||= []
     end
@@ -65,8 +56,8 @@ module Scripted
       @groups ||= Hash.new { |hash, key| hash[key] = Group.new(key) }
     end
 
-    def selected_groups
-      groups.values_at(*selected_group_names)
+    def select_groups(*group_names)
+      groups.values_at(*group_names.map(&:to_sym))
     end
 
     def with_default_config_file!

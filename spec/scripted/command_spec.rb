@@ -9,28 +9,28 @@ describe Scripted::Command do
   end
 
   it "uses the name as shell function if no other command was specified" do
-    expect(command.execute).to be_a Scripted::Commands::Shell
+    expect(command.executable).to be_a Scripted::Commands::Shell
   end
 
   specify "the sh method overrides the command to be run" do
     command.define do
       sh "bar"
     end
-    expect(command.execute).to be_a Scripted::Commands::Shell
+    expect(command.executable).to be_a Scripted::Commands::Shell
   end
 
   specify "the rake method overrides the command to be run" do
     command.define do
       rake "db:migrate"
     end
-    expect(command.execute).to be_a Scripted::Commands::Rake
+    expect(command.executable).to be_a Scripted::Commands::Rake
   end
 
   specify "the ruby method stores a block" do
     command.define do
       ruby { 1 + 1 }
     end
-    expect(command.execute).to be_a Scripted::Commands::Ruby
+    expect(command.executable).to be_a Scripted::Commands::Ruby
   end
 
   it "can be important" do

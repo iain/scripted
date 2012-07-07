@@ -16,9 +16,9 @@ describe Scripted::Configuration do
   it "can select groups" do
     subject.group :foo
     subject.group :bar
-    subject.select_group 'foo'
-    expect(subject).to have(1).selected_groups
-    expect(subject.selected_groups.first).to be subject.groups[:foo]
+    groups = subject.select_groups(:foo)
+    expect(groups).to have(1).item
+    expect(groups.first).to be subject.groups[:foo]
   end
 
   it "handles non existing files" do

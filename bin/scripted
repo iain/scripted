@@ -2,8 +2,10 @@
 
 require 'scripted'
 require 'optparse'
+require 'set'
 
 config = Scripted.configuration
+groups = Set.new
 
 parser = OptionParser.new do |opts|
 
@@ -22,7 +24,7 @@ parser = OptionParser.new do |opts|
   end
 
   opts.on("-g", "--group a,b", Array, "Which groups to run") do |group_names|
-    config.select_group(*group_names)
+    groups += group_names
   end
 
   opts.on("-f", "--format name", "Specify a formatter") do |formatter|
@@ -44,4 +46,4 @@ rescue OptionParser::InvalidOption, Scripted::ConfigurationError => error
   exit 1
 end
 
-Scripted.start!
+Scripted.start! *groups
