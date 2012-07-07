@@ -9,4 +9,7 @@ RSpec::Core::RakeTask.new(:spec)
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new(:cucumber)
 
-task :default => [ :spec, :cucumber ]
+require 'scripted/rake_task'
+Scripted::RakeTask.new(:scripted)
+
+task :default => [:scripted]
