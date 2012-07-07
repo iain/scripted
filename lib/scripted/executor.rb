@@ -38,7 +38,7 @@ module Scripted
     end
 
     def failed?
-      executed? && !@success
+      executed? && !unimportant? && !@success
     end
 
     def running?
@@ -51,6 +51,10 @@ module Scripted
 
     def halted?
       !!@halted
+    end
+
+    def unimportant?
+      command.unimportant?
     end
 
     def might_halt

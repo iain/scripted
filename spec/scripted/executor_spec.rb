@@ -35,6 +35,13 @@ describe Scripted::Executor do
     expect(executor).to be_failed
   end
 
+  it "won't be failed when command is unimportant" do
+    command("false") { unimportant! }
+    expect(executor).not_to be_failed
+    executor.call
+    expect(executor).not_to be_failed
+  end
+
   it "is not started by default" do
     expect { executor.call }.to change { executor.executed? }.from(false).to(true)
   end
