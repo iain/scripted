@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Scripted::VERSION
 
+  gem.add_runtime_dependency     "childprocess", "~> 0.3"
   gem.add_development_dependency "rspec",        "~> 2.11"
   gem.add_development_dependency "cucumber",     "~> 1.2"
   gem.add_development_dependency "aruba",        "~> 0.4"

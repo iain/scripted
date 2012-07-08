@@ -1,3 +1,5 @@
+require 'childprocess'
+
 module Scripted
   module Commands
     class Shell
@@ -8,13 +10,15 @@ module Scripted
         @command = command
       end
 
-      def execute!
-        system command
-        $?.to_i == 0
-      rescue Exception => error
-        puts error
-        puts error.backtrace
-        false
+      def execute!(log = $stdout)
+        process = ChildProcess.build(command)
+
+        process.io.stdout = log
+        process.io.stderr = log
+        process.start
+
+        process.wait
+        process.exit_code == 0
       end
 
     end
