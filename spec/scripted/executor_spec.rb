@@ -14,8 +14,9 @@ describe Scripted::Executor do
     executor.call
   end
 
-  it "notifies halting" do
-    command = command("false") { important! }
+  it "notifies halting", :capture do
+    command { important! }
+    expect(command).to receive(:execute!).and_raise(RuntimeError)
     expect(delegate).to receive(:done).with(executor)
     expect(delegate).to receive(:halt).with(executor)
     executor.call
@@ -28,15 +29,16 @@ describe Scripted::Executor do
     expect(executor).to be_success
   end
 
-  it "can be failed" do
-    command "false"
+  it "can be failed", :capture do
+    expect(command).to receive(:execute!).and_raise(RuntimeError)
     expect(executor).not_to be_failed
     executor.call
     expect(executor).to be_failed
   end
 
-  it "won't be failed when command is unimportant" do
-    command("false") { unimportant! }
+  it "won't be failed when command is unimportant", :capture do
+    command { unimportant! }
+    expect(command).to receive(:execute!).and_raise(RuntimeError)
     expect(executor).not_to be_failed
     executor.call
     expect(executor).not_to be_failed

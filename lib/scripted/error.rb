@@ -4,4 +4,7 @@ module Scripted
 
   class RunningFailed < Error
   end
+
+  class CommandFailed < Error
+  end
 end

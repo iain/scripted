@@ -10,7 +10,7 @@ module Scripted
         @command = command
       end
 
-      def execute!(log = $stdout)
+      def execute!(log = STDOUT)
         process = ChildProcess.build(command)
 
         process.io.stdout = log
@@ -18,7 +18,9 @@ module Scripted
         process.start
 
         process.wait
-        process.exit_code == 0
+        if process.exit_code != 0
+          fail CommandFailed, command
+        end
       end
 
     end

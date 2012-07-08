@@ -18,7 +18,7 @@ module Scripted
       group_runner.call
     end
 
-    it "can fail" do
+    it "can fail", :capture do
       group.define do
         run "false"
       end
@@ -26,7 +26,7 @@ module Scripted
       expect(group_runner).to be_failed
     end
 
-    it "runs only forced commands after halted" do
+    it "runs only forced commands after halted", :capture do
       failing = nil
       not_run = nil
       forced = nil
@@ -44,6 +44,9 @@ module Scripted
           forced = self
         end
       end
+
+      expect(not_run).to receive(:execute!).never
+      expect(forced).to receive(:execute!).once
 
       GroupRunner.call(group, configuration)
     end

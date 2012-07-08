@@ -23,11 +23,25 @@ module Scripted
     def execute!
       return if executed?
       @running = true
-      @success = command.execute!
+      @started_at = Time.now
+      command.execute!
+      @success = true
+    rescue Exception => error
+      warn "#{error.class}: #{error}"
+      warn ""
+      error.backtrace.each do |line|
+        warn line
+      end
+      @error = error
+      @success = false
     ensure
       @executed = true
       @running = false
+      @ended_at = Time.now
+      @runtime = @ended_at - @started_at
     end
+
+    attr_reader :started_at, :ended_at, :runtime, :error
 
     def important?
       command.important?
