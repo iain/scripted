@@ -1,3 +1,6 @@
+require 'bundler/setup'
+Bundler.setup
+
 require 'support/expect_to_receive'
 
 RSpec.configure do |config|
