@@ -15,6 +15,19 @@ Feature: Specifying Commands
     When I run `scripted`
     Then the output should contain "the command output"
 
+  Scenario: Choosing a different shell command with backticks
+    This is exactly the same as the `sh` method.
+
+    Given the configuration:
+    """
+    run "the name" do
+      `echo the command output`
+    end
+    """
+    When I run `scripted`
+    Then the output should contain "the command output"
+
+
 
   Scenario: Running a rake command outside rake
     Given a file named "Rakefile" with:

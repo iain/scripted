@@ -19,6 +19,13 @@ describe Scripted::Command do
     expect(command.executable).to be_a Scripted::Commands::Shell
   end
 
+  specify "the backtics also do a shell command" do
+    command.define do
+      `bar`
+    end
+    expect(command.executable).to be_a Scripted::Commands::Shell
+  end
+
   specify "the rake method overrides the command to be run" do
     command.define do
       rake "db:migrate"

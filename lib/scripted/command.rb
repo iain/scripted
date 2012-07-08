@@ -24,6 +24,7 @@ module Scripted
     def sh(command)
       @command = Commands::Shell.new(command)
     end
+    alias_method :`, :sh
 
     def rake(command)
       @command = Commands::Rake.new(command)
