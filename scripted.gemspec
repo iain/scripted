@@ -15,11 +15,14 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Scripted::VERSION
 
-  gem.add_runtime_dependency     "childprocess", "~> 0.3"
-  gem.add_development_dependency "rspec",        "~> 2.11"
-  gem.add_development_dependency "cucumber",     "~> 1.2"
-  gem.add_development_dependency "aruba",        "~> 0.4"
-  gem.add_development_dependency "rake",         "~> 0.9"
-  gem.add_development_dependency "guard-rspec",  "~> 1.1"
-  gem.add_development_dependency "ruby_gntp",    "~> 0.3"
+  gem.add_runtime_dependency "childprocess"
+
+  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "cucumber"
+  gem.add_development_dependency "aruba"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "guard-rspec"
+  gem.add_development_dependency "ruby_gntp"
+  gem.add_development_dependency "fivemat"
+
 end
