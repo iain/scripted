@@ -1,12 +1,44 @@
-Feature: Specifying Commands
+Feature: Specifying which Command to Run
 
   By default the name of the command is the shell command to be run.
 
   There are a number of different runners.
 
+  * Shell commands (the default)
+  * Rake commands
+  * Ruby commands
+
+  Shell commands can be specified by using backticks, or the `sh` method:
+
+  ``` ruby
+  run "javascript tests" do
+    `cucumber --tags @javascript`
+  end
+  ```
+
+  Rake commands will try to run in the same process if you also happen to use
+  Rake integration. Otherwise it will just shell out.
+
+  ``` ruby
+  run "migrations" do
+    rake "db:migrate"
+  end
+  ```
+
+  Ruby commands will just execute a block. If you want to fail a ruby command,
+  just raise an exception.
+
+  ``` ruby
+  run "version check" do
+    ruby do
+      fail "incorrect version" if Scripted::VERSION != "1.0"
+    end
+  end
+  ```
+
   Scenario: Choosing a different shell command
 
-    Given a file named "scripted.rb" with:
+    Given the configuration:
     """
     run "the name" do
       sh "echo the command output"
@@ -16,7 +48,6 @@ Feature: Specifying Commands
     Then the output should contain "the command output"
 
   Scenario: Choosing a different shell command with backticks
-    This is exactly the same as the `sh` method.
 
     Given the configuration:
     """
@@ -38,7 +69,7 @@ Feature: Specifying Commands
       end
     end
     """
-    And a file named "scripted.rb" with:
+    And the configuration:
     """
     run "rake" do
       rake "db:migrate"
@@ -76,7 +107,7 @@ Feature: Specifying Commands
 
   Scenario: Running pure ruby
 
-    Given a file named "scripted.rb" with:
+    Given the configuration:
     """
     run "some ruby code" do
       ruby { puts "the command" }

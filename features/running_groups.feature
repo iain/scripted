@@ -1,4 +1,4 @@
-Feature: Groups
+Feature: Running Groups
 
   You can specify multiple groups and use the command line option "--group" or
   "-g" to run only that group.
@@ -6,8 +6,16 @@ Feature: Groups
   If you don't specify a group, it will run the default group. And if you don't
   specify which group a command is in, it will be in the default group.
 
+  Example:
+
+  ``` ruby
+  group :install do
+    run "bundle install"
+  end
+  ```
+
   Background:
-    Given a file named "scripted.rb" with:
+    Given the configuration:
     """
     run "echo from the default group"
     group :install do

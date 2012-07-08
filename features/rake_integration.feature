@@ -1,9 +1,39 @@
-Feature: Rake integration
+Feature: Rake Integration
 
   Scripted has support for Rake.
 
   You can either let it pick up your "scripted.rb" file, or define the commands
   in place.
+
+  When you don't specify a block, it will pick up your "scripted.rb" file:
+
+  ``` ruby
+  require 'scripted/rake_task'
+  Scripted::RakeTask.new(:scripted)
+  ```
+
+  When you specify a block, it will use this block to execute:
+
+  ``` ruby
+  require 'scripted/rake_task'
+  Scripted::RakeTask.new(:scripted) do
+    run "echo from inside rakefile"
+  end
+  ```
+
+  The rake command will run the default group by default. To change this, specify the group:
+
+  ``` ruby
+  require 'scripted/rake_task'
+  Scripted::RakeTask.new(:install, :install)
+  ```
+
+  You can also specify Rake dependencies:
+
+  ``` ruby
+  require 'scripted/rake_task'
+  Scripted::RakeTask.new(:my_task => "db:migrate")
+  ```
 
   Scenario: Picking up scripted.rb
 

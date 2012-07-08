@@ -1,6 +1,13 @@
-Feature: Parallel
+Feature: Running Commands in Parallel
 
   Commands can be run in parallel. Simply put a `parallel` block around them.
+
+  ``` ruby
+  parallel do
+    run "rspec"
+    run "cucumber"
+  end
+  ```
 
   Scenario: Parallel
 

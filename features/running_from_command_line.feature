@@ -1,4 +1,4 @@
-Feature: Running
+Feature: Running from the Command Line
 
   Scripted comes with a executable to run commands. This requires you to have
   a configuration file somewhere. The default configuration file is
@@ -15,7 +15,7 @@ Feature: Running
 
       $ scripted --help
 
-  Scenario: Simple
+  Scenario: Running some commands
 
     Given a file named "scripted.rb" with:
     """
@@ -26,14 +26,6 @@ Feature: Running
     Then it should pass
     And the output should contain "command 1"
     And the output should contain "command 2"
-
-  Scenario: Having failing commands
-    Given a file named "scripted.rb" with:
-    """
-    run "false"
-    """
-    When I run `scripted`
-    Then it should fail
 
   Scenario: By specifying another file
 
