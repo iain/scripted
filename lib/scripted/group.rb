@@ -12,11 +12,13 @@ module Scripted
     end
 
     def run(name, &block)
-      commands << Command.new(name, &block)
+      commands << Command.new(name, parallel: @parallel, &block)
     end
 
     def parallel(&block)
-      fail "TODO"
+      @parallel = Object.new
+      yield
+      @parallel = nil
     end
 
     def commands

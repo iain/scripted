@@ -1,5 +1,3 @@
-require 'childprocess'
-
 module Scripted
   module Commands
     class Shell

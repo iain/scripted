@@ -3,8 +3,9 @@ module Scripted
 
     attr_reader :name
 
-    def initialize(name, &block)
+    def initialize(name, options = {}, &block)
       @name = name
+      @options = options
       define(&block) if block
     end
 
@@ -62,6 +63,18 @@ module Scripted
 
     def forced?
       @forced
+    end
+
+    def parallel?
+      !!@options[:parallel]
+    end
+
+    def parallel_id
+      @parallel_id ||= (@options[:parallel] || Object.new).object_id
+    end
+
+    def run_in_parallel_with?(other)
+      other && parallel_id == other.parallel_id
     end
 
   end

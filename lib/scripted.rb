@@ -1,3 +1,5 @@
+require 'childprocess'
+
 require "scripted/error"
 require "scripted/version"
 require "scripted/method_object"

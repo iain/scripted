@@ -1,3 +1,5 @@
+Thread.abort_on_exception = true
+
 module Scripted
   class GroupRunner
     extend MethodObject
@@ -8,12 +10,26 @@ module Scripted
       @group, @configuration = group, configuration
     end
 
+    def command_sets
+      group.commands.group_by(&:parallel_id).values
+    end
+
     def call
-      group.commands.each do |command|
-        if !halted? || command.forced?
-          Executor.call(command, self)
+      command_sets.each do |commands|
+        thread_pool = []
+        commands.each do |command|
+          if continue_with? command
+            thread_pool << Thread.new do
+              Executor.call(command, self)
+            end
+          end
         end
+        thread_pool.each(&:join)
       end
+    end
+
+    def continue_with?(command)
+      !halted? || command.forced?
     end
 
     def completed
