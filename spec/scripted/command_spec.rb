@@ -46,12 +46,6 @@ describe Scripted::Command do
     expect(command).to be_important
   end
 
-  it "can be silent" do
-    expect(command).not_to be_silent
-    command.silent!
-    expect(command).to be_silent
-  end
-
   it "can be unimportant" do
     expect(command).not_to be_unimportant
     command.unimportant!
@@ -62,6 +56,12 @@ describe Scripted::Command do
     expect(command).not_to be_forced
     command.forced!
     expect(command).to be_forced
+  end
+
+  it "can be only when failed" do
+    expect(command).not_to be_only_when_failed
+    command.only_when_failed!
+    expect(command).to be_only_when_failed
   end
 
   it "can be parallel" do

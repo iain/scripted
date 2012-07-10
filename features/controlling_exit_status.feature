@@ -99,7 +99,6 @@ Feature: Controlling Exit Status
     When I run scripted
     Then it should pass
 
-  @wip
   Scenario: Only when failed with a failing command
     Given the configuration:
     """
@@ -112,7 +111,6 @@ Feature: Controlling Exit Status
     Then it should fail
     And the output should contain "only when failed has run"
 
-  @wip
   Scenario: Only when failed when nothing failed
     Given the configuration:
     """

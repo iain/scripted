@@ -13,14 +13,6 @@ describe Scripted::Configuration do
     expect(subject).to have(1).groups
   end
 
-  it "can select groups" do
-    subject.group :foo
-    subject.group :bar
-    groups = subject.select_groups(:foo)
-    expect(groups).to have(1).item
-    expect(groups.first).to be subject.groups[:foo]
-  end
-
   it "handles non existing files" do
     subject.config_file "non-existing.rb"
     expect { subject.load_files }.to raise_error Scripted::ConfigFileNotFound

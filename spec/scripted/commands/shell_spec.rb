@@ -20,9 +20,7 @@ describe Scripted::Commands::Shell do
     require 'childprocess/version'
     # this spec must be removed when my Pull Request is merged and released.
     # if a newer version of the gem is released
-    if ChildProcess::VERSION == "0.3.3"
-      pending "waiting for my pull request to be released"
-    else
+    if ChildProcess::VERSION != "0.3.3"
       fail "is my pull request merge yet?"
     end
   end

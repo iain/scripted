@@ -42,14 +42,6 @@ module Scripted
       @important
     end
 
-    def silent!
-      @silent = true
-    end
-
-    def silent?
-      @silent
-    end
-
     def unimportant?
       @unimportant
     end
@@ -76,6 +68,14 @@ module Scripted
 
     def run_in_parallel_with?(other)
       other && parallel_id == other.parallel_id
+    end
+
+    def only_when_failed?
+      !!@only_when_failed
+    end
+
+    def only_when_failed!
+      @only_when_failed = true
     end
 
   end

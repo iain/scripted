@@ -56,10 +56,6 @@ module Scripted
       @groups ||= Hash.new { |hash, key| hash[key] = Group.new(key) }
     end
 
-    def select_groups(*group_names)
-      groups.values_at(*group_names.map(&:to_sym))
-    end
-
     def with_default_config_file!
       config_file "scripted.rb" if config_files.empty? && File.exist?("scripted.rb")
     end
