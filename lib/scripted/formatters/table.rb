@@ -7,13 +7,15 @@ module Scripted
         @commands = commands
       end
 
-      def stop
+      def close
         report_lines << [ Column["Command"], Column["Runtime"], Column["Status"] ]
         @commands.each do |command|
           report_lines << [ Column[command.name], Column[command.runtime, "s"], Column[status(command)] ]
         end
         widths = report_lines.transpose.map { |line| line.max_by(&:size).size }
         header = report_lines.shift
+        puts ""
+        puts ""
         puts separator(widths, "┌", "┬", "┐")
         puts report_line(header, widths)
         puts separator(widths, "├", "┼", "┤")
@@ -53,10 +55,6 @@ module Scripted
 
       def report_lines
         @report_lines ||= []
-      end
-
-      def gray(text)
-        "\e[30m#{text}\e[0m"
       end
 
       class Column

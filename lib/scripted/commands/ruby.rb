@@ -7,12 +7,14 @@ module Scripted
       end
 
       def execute!(log = STDOUT)
+        old_stdout = $stdout
+        old_stderr = $stderr
         $stdout = log
         $stderr = log
         @code.call
       ensure
-        $stdout = STDOUT
-        $stderr = STDERR
+        $stdout = old_stdout
+        $stderr = old_stderr
       end
 
     end

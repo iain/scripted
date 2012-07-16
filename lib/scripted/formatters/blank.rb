@@ -30,7 +30,16 @@ module Scripted
       end
 
       def <<(output)
-        STDOUT.print output
+      end
+
+      private
+
+      def red(text)
+        "\e[31m#{text}\e[0m"
+      end
+
+      def gray(text)
+        "\e[30m#{text}\e[0m"
       end
 
     end
