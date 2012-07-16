@@ -2,10 +2,11 @@ module Scripted
   module Formatters
     class Blank
 
-      attr_reader :out
+      attr_reader :out, :configuration
 
-      def initialize(out)
+      def initialize(out, configuration)
         @out = out || STDERR
+        @configuration = configuration
       end
 
       def start(commands)
@@ -34,12 +35,20 @@ module Scripted
 
       private
 
-      def red(text)
-        "\e[31m#{text}\e[0m"
-      end
+      def red(text);      color(31, text);  end
+      def green(text);    color(32, text);  end
+      def yellow(text);   color(33, text);  end
+      def blue(text);     color(34, text);  end
+      def magenta(text);  color(35, text);  end
+      def cyan(text);     color(36, text);  end
+      def white(text);    color(37, text);  end
 
-      def gray(text)
-        "\e[30m#{text}\e[0m"
+      def color(code, text)
+        if configuration.color?
+          "\e[#{code}m#{text}\e[0m"
+        else
+          text
+        end
       end
 
     end

@@ -74,7 +74,7 @@ module Scripted
         formatter_names = [ {:name => "default"} ]
       end
       formatters = formatter_names.map do |formatter|
-        find_formatter(formatter[:name]).new(formatter.fetch(:out, STDERR))
+        find_formatter(formatter[:name]).new(formatter.fetch(:out, STDERR), configuration)
       end
       formatters
     end

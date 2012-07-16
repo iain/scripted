@@ -42,11 +42,11 @@ module Scripted
       end
 
       def separator(widths, left, middle, right)
-        gray(left) + widths.map { |width| (gray("─") * (width + 2)).force_encoding('utf-8') }.join(gray(middle)) + gray(right)
+        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)).force_encoding('utf-8') }.join(cyan(middle)) + cyan(right)
       end
 
       def report_line(line, widths)
-        gray("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(gray(" │ ")) + gray(" │")
+        cyan("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ ")) + cyan(" │")
       end
 
       def puts(*args)

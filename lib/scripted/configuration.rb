@@ -7,6 +7,8 @@ module Scripted
 
   class Configuration
 
+    attr_accessor :color
+
     # Defines a group
     def group(name, &block)
       groups[name].define(&block)
@@ -25,6 +27,10 @@ module Scripted
 
     def formatter(name, options = {})
       formatters << options.merge(:name => name)
+    end
+
+    def color?
+      color.nil? ? true : color
     end
 
     def out(out)

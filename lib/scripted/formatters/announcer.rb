@@ -16,9 +16,9 @@ module Scripted
       def execute(command)
         @semaphore.synchronize do
           out.puts ""
-          out.puts gray("┌" + ("─" * (@length - 2)) + "┐")
-          out.puts "#{gray("│")} #{command.name.center(@length - 4)} #{gray("│")}"
-          out.puts gray("└" + ("─" * (@length - 2)) + "┘")
+          out.puts cyan("┌" + ("─" * (@length - 2)) + "┐")
+          out.puts "#{cyan("│")} #{command.name.center(@length - 4)} #{cyan("│")}"
+          out.puts cyan("└" + ("─" * (@length - 2)) + "┘")
           out.puts ""
         end
       end

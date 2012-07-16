@@ -13,11 +13,11 @@ module Scripted
 
       def exception(command, exception)
         @semaphore.synchronize do
-          warn red("#{exception.class} during the execution of #{command.name}: #{exception}")
+          warn red("  #{exception.class} during the execution of #{command.name}: #{exception}")
           exception.backtrace.each do |line|
             # remove gem stuff from the backtrace
             unless line.start_with?(File.expand_path("../../../", __FILE__))
-              warn gray("  - #{line}")
+              warn cyan("  # #{line}")
             end
           end
         end

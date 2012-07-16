@@ -35,6 +35,10 @@ parser = OptionParser.new do |opts|
     config.out out
   end
 
+  opts.on("-c", "--[no-]color", "Use color in formatters?") do |color|
+    config.color = color
+  end
+
 end
 
 begin
