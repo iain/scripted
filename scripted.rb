@@ -1,5 +1,6 @@
 formatter "default"
 formatter "table"
+formatter "announcer"
 
 parallel do
   run "bundler" do
@@ -10,7 +11,7 @@ parallel do
   end
   run "cucumber"
 end
-# because cucumber access the file system, it cannot run two at the same time
+# because cucumber accesses the file system, it cannot run two at the same time
 run "wip" do
   `cucumber -p wip`
 end

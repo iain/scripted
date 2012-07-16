@@ -34,7 +34,10 @@ module Scripted
     delegate_to_formatters :halted
     delegate_to_formatters :execute
     delegate_to_formatters :exception
-    delegate_to_formatters :<<
+
+    def <<(output)
+      send_to_formatters :<<, output
+    end
 
     def to_io
       @slave_file
@@ -45,8 +48,7 @@ module Scripted
     end
 
     def close
-      @master_io.flush
-      sleep 0.1 # give the @reader thread time to process the flush
+      sync
       @reader.exit
       @slave_file.close
       @master_io.close
@@ -54,6 +56,12 @@ module Scripted
     end
 
     private
+
+    def sync
+      @master_io.sync
+      @slave_file.sync
+      sleep 0.01
+    end
 
     def formatters
       @formatters ||= build_formatters
@@ -69,8 +77,9 @@ module Scripted
 
     def find_formatter(name)
       { "table" => Formatters::Table,
-        "default" => Formatters::Default
-      }[name]
+        "default" => Formatters::Default,
+        "announcer" => Formatters::Announcer
+      }.fetch(name)
     end
 
   end
