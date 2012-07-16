@@ -9,8 +9,15 @@ Feature: Formatters
     run "false"
     run "true"
     """
-    When I run `scripted`
+    When I run `scripted -f table`
     Then it should fail with:
     """
-    THE TABLE
+    ┌─────────┬─────────┬────────┐
+    │ Command │ Runtime │ Status │
+    ├─────────┼─────────┼────────┤
+    │ true    │  0.005s │ false  │
+    │ true    │  0.003s │ false  │
+    │ false   │  0.004s │ true   │
+    │ true    │  0.004s │ false  │
+    └─────────┴─────────┴────────┘
     """

@@ -2,9 +2,9 @@ module Scripted
   module Formatters
     class Default < Blank
 
-      def <<(output)
-        out.print output
-      end
+      # def <<(output)
+      #   out.print output
+      # end
 
       def exception(command, exception)
         warn "#{exception.class} during the execution of #{command.name}: #{exception}"

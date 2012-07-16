@@ -5,7 +5,7 @@ module Scripted
       attr_reader :out
 
       def initialize(out)
-        @out = out
+        @out = out || STDERR
       end
 
       def start(commands)
@@ -30,6 +30,7 @@ module Scripted
       end
 
       def <<(output)
+        STDOUT.print output
       end
 
     end

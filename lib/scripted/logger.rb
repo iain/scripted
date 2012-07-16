@@ -46,7 +46,7 @@ module Scripted
 
     def close
       @master_io.flush
-      sleep 0.01 # give the @reader thread time to process the flush
+      sleep 0.1 # give the @reader thread time to process the flush
       @reader.exit
       @slave_file.close
       @master_io.close
@@ -56,13 +56,21 @@ module Scripted
     private
 
     def formatters
-      # @formatters ||= configuration.formatters.map do |formatter|
-      #   find_formatter(formatter[:name]).new(formatter[:out])
-      # end
-      @formatters ||= [ Formatters::Default.new(STDOUT) ]
+      @formatters ||= build_formatters
+    end
+
+    def build_formatters
+      formatters = configuration.formatters.map do |formatter|
+        find_formatter(formatter[:name]).new(formatter[:out] || STDERR)
+      end
+      formatters = [ Formatters::Default.new(STDERR) ] if formatters.empty?
+      formatters
     end
 
     def find_formatter(name)
+      { "table" => Formatters::Table,
+        "default" => Formatters::Default
+      }[name]
     end
 
   end
