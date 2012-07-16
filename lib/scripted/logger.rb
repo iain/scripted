@@ -24,6 +24,7 @@ module Scripted
 
     def self.delegate_to_formatters(name)
       define_method name do |*args, &block|
+        sync
         send_to_formatters(name, *args, &block)
       end
     end

@@ -4,7 +4,7 @@ module Scripted
 
       def initialize(*)
         super
-        @exceptions = []
+        @semaphore = Mutex.new
       end
 
       def <<(output)
@@ -12,11 +12,7 @@ module Scripted
       end
 
       def exception(command, exception)
-        @exceptions << [ command, exception ]
-      end
-
-      def close
-        @exceptions.each do |(command, exception)|
+        @semaphore.synchronize do
           warn red("#{exception.class} during the execution of #{command.name}: #{exception}")
           exception.backtrace.each do |line|
             # remove gem stuff from the backtrace
@@ -28,7 +24,6 @@ module Scripted
       end
 
       def warn(*args)
-        out.flush
         out.puts(*args)
       end
 
