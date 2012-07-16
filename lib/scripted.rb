@@ -16,9 +16,6 @@ require "scripted/running/execute"
 require "scripted/logger"
 
 require "scripted/formatters/blank"
-require "scripted/formatters/default"
-require "scripted/formatters/table"
-require "scripted/formatters/announcer"
 
 module Scripted
 
