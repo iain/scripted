@@ -2,21 +2,13 @@ module Scripted
   module Running
     module Execute
 
-      def self.call(command, delegate)
-        command.execute!
+      def self.call(command, delegate, logger)
+        command.execute!(logger.to_io)
         delegate.success!
       rescue Exception => exception
+        logger.exception(command, exception)
         delegate.failed!(exception)
-        log exception
         return false
-      end
-
-      def self.log(exception)
-        warn "#{exception.class}: #{exception}"
-        warn ""
-        exception.backtrace.each do |line|
-          warn line
-        end
       end
 
     end

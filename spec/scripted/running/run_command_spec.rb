@@ -4,7 +4,8 @@ describe Scripted::Running::RunCommand do
 
   let(:command)  { stub(:command, :unimportant? => false, :forced? => false, :important? => false, :only_when_failed? => false) }
   let(:delegate) { mock :stub, :done => true, :halt! => true }
-  subject(:run_command) { Scripted::Running::RunCommand.new(command) }
+  subject(:run_command) { Scripted::Running::RunCommand.new(command, logger) }
+  let(:logger) { mock(:logger).as_null_object }
 
   def run
     run_command.execute!(delegate)

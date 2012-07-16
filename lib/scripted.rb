@@ -13,15 +13,22 @@ require "scripted/running/run_commands"
 require "scripted/running/run_command"
 require "scripted/running/execute"
 
+require "scripted/logger"
+
+require "scripted/formatters/blank"
+require "scripted/formatters/default"
+require "scripted/formatters/table"
+
 module Scripted
 
   def self.start!(*group_names)
-    select_commands = Running::SelectCommands.new(configuration)
-    commands = select_commands.commands(group_names)
-    run_commands = Running::RunCommands.new(configuration)
-    run_commands.run(commands)
-
-    raise RunningFailed, "One or more commands have failed" if run_commands.failed?
+    Logger.new(configuration) do |logger|
+      select_commands = Running::SelectCommands.new(configuration, logger)
+      commands = select_commands.commands(group_names)
+      run_commands = Running::RunCommands.new(logger)
+      run_commands.run(commands)
+      raise RunningFailed, "One or more commands have failed" if run_commands.failed?
+    end
   end
 
   # Configure it, just like in the `scripted.rb` file.

@@ -14,7 +14,7 @@ module Scripted
         # not running from within Rake, so falling back shelling out
         Shell.new("rake #{command} --trace").execute!(log)
       else
-        task.invoke
+        Ruby.new(lambda { task.invoke }).execute!(log)
       end
 
     end

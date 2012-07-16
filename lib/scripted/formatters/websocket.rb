@@ -1,5 +1,3 @@
-require 'scripted/formatters/buffered_logger'
-
 module Scripted
   module Formatters
 

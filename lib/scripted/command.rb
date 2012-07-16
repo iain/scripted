@@ -17,8 +17,8 @@ module Scripted
       @command || Commands::Shell.new(@name)
     end
 
-    def execute!
-      executable.execute!
+    def execute!(logger)
+      executable.execute!(logger)
     end
 
     def sh(command)

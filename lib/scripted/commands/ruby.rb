@@ -6,8 +6,13 @@ module Scripted
         @code = code
       end
 
-      def execute!
+      def execute!(log = STDOUT)
+        $stdout = log
+        $stderr = log
         @code.call
+      ensure
+        $stdout = STDOUT
+        $stderr = STDERR
       end
 
     end

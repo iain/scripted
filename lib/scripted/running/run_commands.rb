@@ -2,11 +2,14 @@ module Scripted
   module Running
     class RunCommands
 
-      def initialize(configuration)
-        @configuration = configuration
+      attr_reader :logger
+
+      def initialize(logger)
+        @logger = logger
       end
 
       def run(commands)
+        logger.start(commands)
         commands.group_by(&:parallel_id).each do |parallel_id, parallel_commands|
           threads = []
           parallel_commands.each do |command|
@@ -18,6 +21,7 @@ module Scripted
           end
           threads.each(&:join)
         end
+        logger.stop
       end
 
       def completed
@@ -25,6 +29,7 @@ module Scripted
       end
 
       def done(command)
+        logger.done(command)
         completed << command
       end
 
@@ -33,6 +38,7 @@ module Scripted
       end
 
       def halt!
+        logger.halted
         @halted = true
       end
 

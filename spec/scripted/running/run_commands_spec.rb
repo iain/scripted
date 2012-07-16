@@ -3,8 +3,8 @@ require 'ostruct'
 
 describe Scripted::Running::RunCommands do
 
-  let(:run_commands) { Scripted::Running::RunCommands.new(configuration) }
-  let(:configuration) { mock :configuration }
+  let(:run_commands) { Scripted::Running::RunCommands.new(logger) }
+  let(:logger) { mock(:logger).as_null_object }
 
   def parallel_id
     @parallel_id ||= 0
@@ -14,7 +14,7 @@ describe Scripted::Running::RunCommands do
 
   def run_command(options = {})
     command = OpenStruct.new({:parallel_id => parallel_id}.merge(options))
-    Scripted::Running::RunCommand.new(command)
+    Scripted::Running::RunCommand.new(command, logger)
   end
 
   before do

@@ -16,6 +16,7 @@ module Scripted
     def run(name, &block)
       groups[:default].define { run(name, &block) }
     end
+    alias :` :run
 
     # Makes a parallel block inside the `:default` group.
     def parallel(&block)

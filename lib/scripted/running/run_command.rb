@@ -2,11 +2,12 @@ module Scripted
   module Running
     class RunCommand
 
-      attr_reader :command
+      attr_reader :command, :logger
       attr_reader :started_at, :ended_at, :runtime, :exception, :delegate
 
-      def initialize(command)
+      def initialize(command, logger)
         @command = command
+        @logger = logger
       end
 
       def execute!(delegate)
@@ -14,7 +15,8 @@ module Scripted
         @delegate = delegate
         @running = true
         @started_at = Time.now
-        Execute.call(command, self)
+        logger.execute(self)
+        Execute.call(command, self, logger)
       end
 
       def done
@@ -82,6 +84,10 @@ module Scripted
 
       def forced?
         command.forced?
+      end
+
+      def name
+        command.name
       end
 
     end
