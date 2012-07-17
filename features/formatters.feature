@@ -15,3 +15,18 @@ Feature: Formatters
     │ Command │ Runtime │ Status  │
     ├─────────┼─────────┼─────────┤
     """
+
+  Scenario: Announcer formatter
+    Given the configuration:
+    """
+    run "echo hi there"
+    """
+    When I run `scripted -f announcer -f default`
+    Then the output should contain:
+    """
+    ┌────────────────────────────────────────────────┐
+    │                 echo hi there                  │
+    └────────────────────────────────────────────────┘
+
+    hi there
+    """
