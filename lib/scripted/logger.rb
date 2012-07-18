@@ -73,7 +73,7 @@ module Scripted
       if formatter_names.empty?
         formatter_names = [ {:name => "default"} ]
       end
-      formatters = formatter_names.map do |formatter|
+      formatters = formatter_names.uniq { |fn| fn[:name] }.map do |formatter|
         find_formatter(formatter[:name]).new(formatter.fetch(:out, STDERR), configuration)
       end
       formatters

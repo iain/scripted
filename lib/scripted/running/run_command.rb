@@ -90,6 +90,10 @@ module Scripted
         command.name
       end
 
+      def to_json(*)
+        { :name => name, :forced => forced?, :success? => success?, :halted => halted?, :executed => executed? }.to_json
+      end
+
     end
   end
 end

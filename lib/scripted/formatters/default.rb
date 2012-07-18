@@ -20,7 +20,7 @@ module Scripted
           exception.backtrace.each do |line|
             # remove gem stuff from the backtrace
             unless line.start_with?(File.expand_path("../../../", __FILE__))
-              warn cyan("  # #{line}")
+              warn cyan("    # #{line}")
             end
           end
         end
