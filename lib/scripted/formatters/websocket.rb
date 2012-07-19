@@ -6,9 +6,9 @@ module Scripted
   module Formatters
     class Websocket < Blank
 
-      def initialize(*)
-        super
-        raise ArgumentError, "The websocket needs an output. Please specify it with 'scripted -f websocket -o ws://localhost/foo'" if out.is_a?(IO)
+      def initialize(out, configuration)
+        @uri = URI.parse(out)
+        super(@uri, configuration)
         @buffer = ""
         @old_buffer = ""
         @flusher = Thread.new do
@@ -26,49 +26,53 @@ module Scripted
 
       def publish(data)
         message = {:channel => "/foo", :data => data }
-        uri = URI.parse("http://localhost:9292/faye")
-        Net::HTTP.post_form(uri, :message => message.to_json)
+        Net::HTTP.post_form(@uri, :message => message.to_json)
       end
 
       def start(commands)
-        flush
+        flush!
         publish :action => :start, :commands => commands
       end
 
       def stop
-        flush
+        flush!
         publish :action => :stop
       end
 
       def exception(command, exception)
-        flush
+        flush!
         publish :action => :exception, :command => command, :exception => exception, :backtrace => exception.backtrace
       end
 
       def done(command)
-        flush
+        flush!
         publish :action => :done, :command => command
       end
 
       def halted
+        flush!
         publish :action => :halted
       end
 
       def execute(command)
-        flush
+        flush!
         publish :action => :execute, :command => command
+      end
+
+      def flush!
+        flush
+        @buffer = ""
       end
 
       def flush
         if @buffer != ""
           publish :action => :output, :output => @buffer
-          @buffer = ""
         end
       end
 
       def close
         @flusher.exit
-        flush
+        flush!
         publish :action => :close
       end
 

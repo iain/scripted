@@ -5,7 +5,13 @@ module Scripted
       attr_reader :out, :configuration
 
       def initialize(out, configuration)
-        @out = out || STDERR
+        if out.nil?
+          @out = STDERR
+        elsif out.is_a?(String)
+          @out = File.open(out, 'w:utf-8')
+        else
+          @out = out
+        end
         @configuration = configuration
       end
 
@@ -49,6 +55,10 @@ module Scripted
         else
           text
         end
+      end
+
+      def puts(*args)
+        out.puts(*args)
       end
 
     end

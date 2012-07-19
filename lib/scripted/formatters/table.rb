@@ -49,10 +49,6 @@ module Scripted
         cyan("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ ")) + cyan(" │")
       end
 
-      def puts(*args)
-        out.puts(*args)
-      end
-
       def report_lines
         @report_lines ||= []
       end
