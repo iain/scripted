@@ -8,13 +8,9 @@ module Scripted
     class Table < Blank
       include HumanStatus
 
-      def start(commands)
-        @commands = commands
-      end
-
-      def close
+      def stop(commands)
         report_lines << [ Column["Command"], Column["Runtime"], Column["Status"] ]
-        @commands.each do |command|
+        commands.each do |command|
           report_lines << [ Column[command.name], Column[command.runtime, "s"], Column[human_status(command)] ]
         end
         widths = report_lines.transpose.map { |line| line.max_by(&:size).size }

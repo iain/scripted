@@ -37,7 +37,7 @@ module Scripted
         @exception = exception
         if important?
           @halted = true
-          delegate.halt!
+          delegate.halt!(self)
         end
         done
       end

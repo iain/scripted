@@ -21,7 +21,7 @@ module Scripted
           end
           threads.each(&:join)
         end
-        logger.stop
+        logger.stop(commands)
       end
 
       def completed
@@ -37,8 +37,8 @@ module Scripted
         completed.any?(&:failed?)
       end
 
-      def halt!
-        logger.halted
+      def halt!(command)
+        logger.halted(command)
         @halted = true
       end
 

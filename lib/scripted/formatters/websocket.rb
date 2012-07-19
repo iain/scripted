@@ -18,7 +18,7 @@ module Scripted
             sleep 0.1
           end
         end
-        publish :data => :initialize
+        publish :action => :initialize
       end
 
       def <<(output)
@@ -35,9 +35,9 @@ module Scripted
         publish :action => :start, :commands => commands
       end
 
-      def stop
+      def stop(commands)
         flush!
-        publish :action => :stop
+        publish :action => :stop, :commands => commands
       end
 
       def exception(command, exception)
@@ -50,9 +50,9 @@ module Scripted
         publish :action => :done, :command => command
       end
 
-      def halted
+      def halted(command)
         flush!
-        publish :action => :halted
+        publish :action => :halted, :command => command
       end
 
       def execute(command)

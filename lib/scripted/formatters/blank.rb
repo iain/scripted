@@ -19,7 +19,7 @@ module Scripted
       def start(commands)
       end
 
-      def stop
+      def stop(commands)
       end
 
       def exception(command, exception)
@@ -28,7 +28,7 @@ module Scripted
       def done(command)
       end
 
-      def halted
+      def halted(command)
       end
 
       def execute(command)
@@ -60,6 +60,10 @@ module Scripted
 
       def puts(*args)
         out.puts(*args)
+      end
+
+      def print(*args)
+        out.print(*args)
       end
 
       def color_enabled?

@@ -9,7 +9,7 @@ module Scripted
       end
 
       def <<(output)
-        out.print output
+        print output
       end
 
       def exception(command, exception)

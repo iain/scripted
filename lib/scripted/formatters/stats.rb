@@ -7,24 +7,20 @@ module Scripted
     class Stats < Blank
       include HumanStatus
 
-      def start(commands)
-        @commands = commands
-      end
-
-      def close
+      def stop(commands)
         if out.is_a?(File)
-          CSV.open(out.path, "wb", &csv)
+          CSV.open(out.path, "wb", &csv(commands))
         else
-          puts CSV.generate(&csv)
+          puts CSV.generate(&csv(commands))
         end
       end
 
     private
 
-    def csv
+    def csv(commands)
       lambda do |csv|
         csv << ["name", "runtime", "status"]
-        @commands.each do |command|
+        commands.each do |command|
           csv << [command.name, command.runtime, human_status(command)]
         end
       end
