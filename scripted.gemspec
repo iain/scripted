@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Scripted::VERSION
 
   gem.add_runtime_dependency "childprocess"
+  gem.add_runtime_dependency "activesupport"
 
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "cucumber"
