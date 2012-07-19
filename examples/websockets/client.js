@@ -21,7 +21,7 @@ var connect = function() {
 
     var lastTime = null;
 
-    var subscription = client.subscribe('/foo', function(data) {
+    var subscription = client.subscribe('/scripted', function(data) {
       if (data.action === "start") {
         log.innerHTML = cursor;
       } else if ( data.action === "execute" ) {

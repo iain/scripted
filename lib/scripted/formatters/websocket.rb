@@ -21,13 +21,18 @@ module Scripted
         publish :action => :initialize
       end
 
-      def each_char(output, command)
-        @buffer << output
+      def each_char(char, command)
+        @buffer << char
       end
 
       def publish(data)
-        message = {:channel => "/foo", :data => data }
+        message = {:channel => "/scripted", :data => data }
         Net::HTTP.post_form(@uri, :message => message.to_json)
+      rescue Errno::ECONNREFUSED
+        unless @warned
+          warn red("No connection to #{@uri}")
+          @warned = true
+        end
       end
 
       def start(commands, runner)
