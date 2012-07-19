@@ -1,4 +1,6 @@
 # encoding: utf-8
+require "scripted/formatters/blank"
+
 module Scripted
   module Formatters
     class Announcer < Blank

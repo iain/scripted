@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require "scripted/formatters/blank"
 require 'scripted/formatters/human_status'
 
 module Scripted

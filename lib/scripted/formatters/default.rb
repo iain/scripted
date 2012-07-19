@@ -1,3 +1,4 @@
+require "scripted/formatters/blank"
 module Scripted
   module Formatters
     class Default < Blank

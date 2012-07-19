@@ -15,8 +15,6 @@ require "scripted/running/execute"
 
 require "scripted/logger"
 
-require "scripted/formatters/blank"
-
 module Scripted
 
   def self.start!(*group_names)

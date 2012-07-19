@@ -1,6 +1,7 @@
 require "socket"
 require 'json'
 require 'net/http'
+require "scripted/formatters/blank"
 
 module Scripted
   module Formatters

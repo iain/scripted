@@ -1,5 +1,6 @@
-require 'scripted/formatters/human_status'
 require 'csv'
+require "scripted/formatters/blank"
+require 'scripted/formatters/human_status'
 
 module Scripted
   module Formatters
