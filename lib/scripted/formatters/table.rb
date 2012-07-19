@@ -8,7 +8,7 @@ module Scripted
     class Table < Blank
       include HumanStatus
 
-      def stop(commands)
+      def stop(commands, runner)
         report_lines << [ Column["Command"], Column["Runtime"], Column["Status"] ]
         commands.each do |command|
           report_lines << [ Column[command.name], Column[command.runtime, "s"], Column[human_status(command)] ]
@@ -24,6 +24,7 @@ module Scripted
           puts report_line(line, widths)
         end
         puts separator(widths, "└", "┴", "┘")
+        puts "  Total runtime: #{Column[runner.runtime, "s"]}"
       end
 
       private

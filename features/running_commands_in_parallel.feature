@@ -23,5 +23,5 @@ Feature: Running Commands in Parallel
       run "sleep 1"
     end
     """
-    When I run `time scripted`
+    When I run `scripted -f table`
     Then it should have taken about 2 seconds

@@ -4,12 +4,15 @@ module Scripted
 
       attr_reader :logger
 
+      attr_reader :start_time, :end_time, :runtime
+
       def initialize(logger)
         @logger = logger
       end
 
       def run(commands)
-        logger.start(commands)
+        @start_time = Time.now
+        logger.start(commands, self)
         commands.group_by(&:parallel_id).each do |parallel_id, parallel_commands|
           threads = []
           parallel_commands.each do |command|
@@ -21,7 +24,10 @@ module Scripted
           end
           threads.each(&:join)
         end
-        logger.stop(commands)
+      ensure
+        @end_time = Time.now
+        @runtime = @end_time - @start_time
+        logger.stop(commands, self)
       end
 
       def completed

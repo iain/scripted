@@ -7,7 +7,7 @@ module Scripted
     class Stats < Blank
       include HumanStatus
 
-      def stop(commands)
+      def stop(commands, runner)
         if out.is_a?(File)
           CSV.open(out.path, "wb", &csv(commands))
         else

@@ -21,7 +21,7 @@ module Scripted
         publish :action => :initialize
       end
 
-      def <<(output)
+      def each_char(output, command)
         @buffer << output
       end
 
@@ -30,12 +30,12 @@ module Scripted
         Net::HTTP.post_form(@uri, :message => message.to_json)
       end
 
-      def start(commands)
+      def start(commands, runner)
         flush!
         publish :action => :start, :commands => commands
       end
 
-      def stop(commands)
+      def stop(commands, runner)
         flush!
         publish :action => :stop, :commands => commands
       end

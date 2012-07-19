@@ -2,24 +2,17 @@ module Scripted
   module Formatters
     class Blank
 
-      attr_reader :raw_out, :out, :configuration
+      attr_reader :raw_out, :configuration
 
       def initialize(out, configuration)
-        @raw_out = out
-        if out.nil?
-          @out = STDERR
-        elsif out.is_a?(String)
-          @out = File.open(out, 'w:utf-8')
-        else
-          @out = out
-        end
+        @raw_out = out || $stderr
         @configuration = configuration
       end
 
-      def start(commands)
+      def start(commands, runner)
       end
 
-      def stop(commands)
+      def stop(commands, runner)
       end
 
       def exception(command, exception)
@@ -37,7 +30,7 @@ module Scripted
       def close
       end
 
-      def <<(output)
+      def each_char(output, command)
       end
 
       private
@@ -56,6 +49,22 @@ module Scripted
         else
           text
         end
+      end
+
+      def out
+        @out ||= build_out
+      end
+
+      def build_out
+        if raw_out.is_a?(String)
+          File.open(raw_out, 'w:utf-8')
+        else
+          raw_out
+        end
+      end
+
+      def file?
+        out.is_a?(File)
       end
 
       def puts(*args)

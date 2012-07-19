@@ -3,10 +3,10 @@ module Scripted
     module Execute
 
       def self.call(command, delegate, logger)
-        command.execute!(logger.to_io)
+        command.execute!(logger.to_io(delegate))
         delegate.success!
       rescue Exception => exception
-        logger.exception(command, exception)
+        logger.exception(delegate, exception)
         delegate.failed!(exception)
         return false
       end

@@ -25,7 +25,7 @@ module Scripted
 
         process.wait
         if process.exit_code != 0
-          fail CommandFailed, command
+          fail CommandFailed, "`#{command}` failed with exit status #{process.exit_code}"
         end
       end
 

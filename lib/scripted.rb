@@ -1,3 +1,5 @@
+Thread.abort_on_exception = true
+
 require "scripted/error"
 require "scripted/version"
 require "scripted/group"
@@ -13,12 +15,12 @@ require "scripted/running/run_commands"
 require "scripted/running/run_command"
 require "scripted/running/execute"
 
-require "scripted/logger"
+require "scripted/output/logger"
 
 module Scripted
 
   def self.start!(*group_names)
-    Logger.new(configuration) do |logger|
+    Output::Logger.new(configuration) do |logger|
       select_commands = Running::SelectCommands.new(configuration, logger)
       commands = select_commands.commands(group_names)
       run_commands = Running::RunCommands.new(logger)
