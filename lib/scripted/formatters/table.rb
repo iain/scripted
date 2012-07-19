@@ -1,7 +1,11 @@
 # encoding: utf-8
+
+require 'scripted/formatters/human_status'
+
 module Scripted
   module Formatters
     class Table < Blank
+      include HumanStatus
 
       def start(commands)
         @commands = commands
@@ -10,7 +14,7 @@ module Scripted
       def close
         report_lines << [ Column["Command"], Column["Runtime"], Column["Status"] ]
         @commands.each do |command|
-          report_lines << [ Column[command.name], Column[command.runtime, "s"], Column[status(command)] ]
+          report_lines << [ Column[command.name], Column[command.runtime, "s"], Column[human_status(command)] ]
         end
         widths = report_lines.transpose.map { |line| line.max_by(&:size).size }
         header = report_lines.shift
@@ -26,20 +30,6 @@ module Scripted
       end
 
       private
-
-      def status(command)
-        case
-        when command.only_when_failed? && command.success?   then "success because something failed"
-        when command.only_when_failed? && command.failed?    then "failed because something failed"
-        when command.only_when_failed? && !command.executed? then "skipped because nothing failed"
-        when command.failed_but_unimportant? then "failed, but ignored"
-        when command.success?   then "success"
-        when command.halted?    then "failed and halted"
-        when command.failed?    then "failed"
-        when !command.executed? then "didn't run"
-        else "unknown"
-        end
-      end
 
       def separator(widths, left, middle, right)
         cyan(left) + widths.map { |width| (cyan("─") * (width + 2)).force_encoding('utf-8') }.join(cyan(middle)) + cyan(right)

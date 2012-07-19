@@ -87,3 +87,14 @@ Feature: Formatters
 
     hi there
     """
+
+  Scenario: Stats output
+    Given the configuration:
+    """
+    run "echo hi there"
+    """
+    When I run `scripted -f stats`
+    Then the output should contain:
+    """
+    name,runtime,status
+    """

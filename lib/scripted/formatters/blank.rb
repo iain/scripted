@@ -2,9 +2,10 @@ module Scripted
   module Formatters
     class Blank
 
-      attr_reader :out, :configuration
+      attr_reader :raw_out, :out, :configuration
 
       def initialize(out, configuration)
+        @raw_out = out
         if out.nil?
           @out = STDERR
         elsif out.is_a?(String)
