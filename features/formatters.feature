@@ -98,3 +98,27 @@ Feature: Formatters
     """
     name,runtime,status
     """
+
+  Scenario: Custom formatter
+    Given a file named "my_awesome/formatter.rb" with:
+    """
+    require 'scripted/formatters/blank'
+    module MyAwesome
+      class Formatter < Scripted::Formatters::Blank
+
+        def execute(command)
+          puts "I am now starting #{command.name}"
+        end
+
+      end
+    end
+    """
+    And the configuration:
+    """
+    run "true"
+    """
+    When I run `scripted -f MyAwesome::Formatter -I .`
+    Then it should pass with:
+    """
+    I am now starting true
+    """

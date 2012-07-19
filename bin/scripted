@@ -39,6 +39,10 @@ parser = OptionParser.new do |opts|
     config.color = color
   end
 
+  opts.on("-I PATH", "Add a directory to your load path") do |load_path|
+    $LOAD_PATH.unshift(load_path)
+  end
+
 end
 
 begin
