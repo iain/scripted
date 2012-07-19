@@ -42,6 +42,21 @@ Feature: Formatters
     Then the output should not contain "Hi there"
     But the file "output.txt" should contain "Hi there"
 
+  Scenario: Multiple outputs
+    Given the configuration:
+    """
+    run "echo Hello there"
+    """
+    When I run `scripted -f default -o output.txt -f announcer -o announce.txt`
+    Then the file "output.txt" should contain "Hello there"
+    And the file "announce.txt" should contain:
+    
+    """
+    ┌────────────────────────────────────────────────┐
+    │                echo Hello there                │
+    └────────────────────────────────────────────────┘
+    """
+
   Scenario: Status table formatter
     Given the configuration:
     """

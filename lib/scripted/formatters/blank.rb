@@ -50,7 +50,7 @@ module Scripted
       def white(text);    color(37, text);  end
 
       def color(code, text)
-        if configuration.color?
+        if color_enabled?
           "\e[#{code}m#{text}\e[0m"
         else
           text
@@ -59,6 +59,10 @@ module Scripted
 
       def puts(*args)
         out.puts(*args)
+      end
+
+      def color_enabled?
+        configuration.color? && !out.is_a?(File)
       end
 
     end
