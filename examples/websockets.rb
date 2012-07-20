@@ -16,12 +16,12 @@ run "start server" do
   `bundle exec thin -e production -R #{File.join(dir, "server.ru")} -p 9292 -d start`
 end
 
-run "open client" do
-  `bundle exec launchy #{File.join(dir, "client.html")}`
-end
-
 # give the server some time to start
 run "sleep 1"
+
+run "open client" do
+  `bundle exec launchy http://localhost:9292/`
+end
 
 parallel do
   run "rspec"

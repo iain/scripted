@@ -1,17 +1,18 @@
-require "socket"
+require 'time'
 require 'json'
 require 'net/http'
 require "scripted/formatters/blank"
+require "scripted/formatters/human_status"
 
 module Scripted
   module Formatters
     class Websocket < Blank
+      include HumanStatus
 
       def initialize(out, configuration)
         @uri = URI.parse(out)
         super(@uri, configuration)
-        @buffer = ""
-        @old_buffer = ""
+        @buffers = Hash.new { |h,k| h[k] = "" }
         @flusher = Thread.new do
           loop do
             flush
@@ -22,8 +23,57 @@ module Scripted
       end
 
       def each_char(char, command)
-        @buffer << char
+        @buffers[command] << char
       end
+
+      def start(commands, runner)
+        flush!
+        publish :action => :start, :commands => commands.map { |command| command_json(command) }, :runner => runner_json(runner)
+      end
+
+      def stop(commands, runner)
+        flush!
+        publish :action => :stop, :commands => commands.map { |command| command_json(command) }, :runner => runner_json(runner)
+      end
+
+      def exception(command, exception)
+        flush!
+        publish :action => :exception, :command => command_json(command), :exception => exception, :backtrace => exception.backtrace
+      end
+
+      def done(command)
+        flush!
+        publish :action => :done, :command => command_json(command)
+      end
+
+      def halted(command)
+        flush!
+        publish :action => :halted, :command => command_json(command)
+      end
+
+      def execute(command)
+        flush!
+        publish :action => :execute, :command => command_json(command)
+      end
+
+      def flush!
+        flush
+        @buffer = ""
+      end
+
+      def flush
+        if output != ""
+          publish :action => :output, :output => output
+        end
+      end
+
+      def close
+        @flusher.exit
+        flush!
+        publish :action => :close
+      end
+
+      private
 
       def publish(data)
         message = {:channel => "/scripted", :data => data }
@@ -35,51 +85,50 @@ module Scripted
         end
       end
 
-      def start(commands, runner)
-        flush!
-        publish :action => :start, :commands => commands
+      def output
+        @buffers.map { |command, output| { :command => command_json(command), :output => output } }
       end
 
-      def stop(commands, runner)
-        flush!
-        publish :action => :stop, :commands => commands
+
+      def command_json(command)
+        { :name                   => command.name,
+          :forced                 => command.forced?,
+          :success                => command.success?,
+          :halted                 => command.halted?,
+          :executed               => command.executed?,
+          :only_when_failed       => command.only_when_failed?,
+          :parallel               => command.parallel?,
+          :parallel_id            => command.parallel_id,
+          :failed_but_unimportant => command.failed_but_unimportant?,
+          :unimportant            => command.unimportant?,
+          :command_type           => command.command.executable.class.to_s,
+          :runtime                => command.runtime,
+          :started_at             => time(command.started_at),
+          :ended_at               => time(command.ended_at),
+          :running                => command.running?,
+          :id                     => command.object_id,
+          :human_status           => human_status(command),
+          :status_code            => status_code(command)
+        }
       end
 
-      def exception(command, exception)
-        flush!
-        publish :action => :exception, :command => command, :exception => exception, :backtrace => exception.backtrace
+      def runner_json(runner)
+        { :started_at => time(runner.started_at),
+          :ended_at   => time(runner.ended_at),
+          :runtime    => runner.runtime,
+          :halted     => runner.halted?,
+          :running    => runner.running?,
+          :executed   => runner.executed?,
+          :failed     => runner.failed?
+        }
       end
 
-      def done(command)
-        flush!
-        publish :action => :done, :command => command
-      end
-
-      def halted(command)
-        flush!
-        publish :action => :halted, :command => command
-      end
-
-      def execute(command)
-        flush!
-        publish :action => :execute, :command => command
-      end
-
-      def flush!
-        flush
-        @buffer = ""
-      end
-
-      def flush
-        if @buffer != ""
-          publish :action => :output, :output => @buffer
+      def time(time)
+        if time
+          time.utc.iso8601
+        else
+          time
         end
-      end
-
-      def close
-        @flusher.exit
-        flush!
-        publish :action => :close
       end
 
     end

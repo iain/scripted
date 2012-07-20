@@ -39,11 +39,11 @@ module Scripted
     end
 
     def important?
-      @important
+      !!@important
     end
 
     def unimportant?
-      @unimportant
+      !!@unimportant
     end
 
     def unimportant!
@@ -55,7 +55,7 @@ module Scripted
     end
 
     def forced?
-      @forced
+      !!@forced
     end
 
     def parallel?

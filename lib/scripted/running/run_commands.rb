@@ -4,30 +4,29 @@ module Scripted
 
       attr_reader :logger
 
-      attr_reader :start_time, :end_time, :runtime
+      attr_reader :started_at, :ended_at, :runtime
 
       def initialize(logger)
         @logger = logger
+        @executed = false
+        @halted = false
+        @running = false
       end
 
       def run(commands)
-        @start_time = Time.now
-        logger.start(commands, self)
-        commands.group_by(&:parallel_id).each do |parallel_id, parallel_commands|
-          threads = []
-          parallel_commands.each do |command|
-            if should_execute?(command)
-              threads << Thread.new do
-                command.execute!(self)
+        logged commands do
+          commands.group_by(&:parallel_id).each do |parallel_id, parallel_commands|
+            threads = []
+            parallel_commands.each do |command|
+              if should_execute?(command)
+                threads << Thread.new do
+                  command.execute!(self)
+                end
               end
             end
+            threads.each(&:join)
           end
-          threads.each(&:join)
         end
-      ensure
-        @end_time = Time.now
-        @runtime = @end_time - @start_time
-        logger.stop(commands, self)
       end
 
       def completed
@@ -50,6 +49,29 @@ module Scripted
 
       def halted?
         @halted
+      end
+
+      def running?
+        @running
+      end
+
+      def executed?
+        @executed
+      end
+
+      private
+
+      def logged(commands)
+        @started_at = Time.now
+        @running = true
+        logger.start(commands, self)
+        yield
+      ensure
+        @executed = true
+        @running = false
+        @ended_at = Time.now
+        @runtime = @ended_at - @started_at
+        logger.stop(commands, self)
       end
 
       def should_execute?(command)

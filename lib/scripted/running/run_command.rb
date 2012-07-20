@@ -78,6 +78,10 @@ module Scripted
         command.parallel_id
       end
 
+      def parallel?
+        command.parallel?
+      end
+
       def only_when_failed?
         command.only_when_failed?
       end
@@ -88,10 +92,6 @@ module Scripted
 
       def name
         command.name
-      end
-
-      def to_json(*)
-        { :name => name, :forced => forced?, :success? => success?, :halted => halted?, :executed => executed? }.to_json
       end
 
     end

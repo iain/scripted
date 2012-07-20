@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="page-header">
+    {{#view Scripted.ConnectionStatusView}}{{content.message}}{{/view}}
+    <h1>Scripted <small>live command line output via websockets</small></h1>
+  </div>
+
+  {{#view Scripted.RunnerView}}{{message}}{{/view}}
+
+  {{#if Scripted.CommandsController.hasCommands}}
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>Runtime (s)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each Scripted.CommandsController}}
+          {{#view Scripted.CommandView contentBinding="this"}}
+            <tr>
+              <td>{{content.name}}</td>
+              <td>{{content.roundedRuntime}}</td>
+              <td>{{#view Scripted.CommandStatusView contentBinding="content"}}{{text}}{{/view}}</td>
+            </tr>
+          {{/view}}
+        {{/each}}
+      </tbody>
+    </table>
+
+    {{#each Scripted.CommandsController}}
+      {{#view Scripted.CommandView contentBinding="this"}}
+        <h3>{{content.name}} {{#view Scripted.CommandStatusView contentBinding="content"}}{{text}}{{/view}}</h3>
+        {{#if hasOutput}}
+          <div class="output">
+            <pre>{{output}}</pre>
+          </div>
+        {{/if}}
+      {{/view}}
+    {{/each}}
+  {{else}}
+    <div class="well">
+      Run <tt>bundle exec scripted --format websocket --out http://localhost:9292/faye</tt> to start.
+    </div>
+  {{/if}}
+
+</div>
