@@ -13,3 +13,17 @@ require 'scripted/rake_task'
 Scripted::RakeTask.new(:scripted)
 
 task :default => [:scripted]
+
+namespace :examples do
+
+  desc "Run the websockets example (really cool)"
+  Scripted::RakeTask.new(:websockets) do
+    config_file "examples/websockets.rb"
+  end
+
+  desc "Run the parallel example"
+  Scripted::RakeTask.new(:parallel) do
+    config_file "examples/parallel.rb"
+  end
+
+end

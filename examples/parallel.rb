@@ -1,4 +1,5 @@
 # encoding: utf-8
+#
 # This example shows of parallel commands.
 #
 # The output should look something like:
@@ -14,7 +15,7 @@
 #     └─────────┴─────────┴─────────┘
 #       Total runtime: 2.307s
 #
-# To run: bundle exec scripted -r examples/parallel.rb
+# To run: rake examples:parallel
 
 formatter :table
 

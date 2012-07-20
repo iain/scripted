@@ -1,16 +1,14 @@
-# This is an example of using the websockets formatter.  Admittedly, this
-# example is a bit meta, because we use scripted to start the server to which
-# scripted will send its data to.  This means that the first couple of commands
-# will not be shown.
+# This is an example of using the websockets formatter.
 #
-# To run this: bundle exec scripted -r examples/websockets.rb
+# The web application is made with Ember.js. Also, even though some commands
+# might run in parallel, their output will appear properly in the web view.
+#
+# To run this: rake examples:websockets
 
 dir = File.expand_path("../websockets", __FILE__)
 
-formatter :websocket, :out => "http://localhost:9292/faye"
 formatter :default
 formatter :table
-formatter :announcer
 
 run "start server" do
   `bundle exec thin -e production -R #{File.join(dir, "server.ru")} -p 9292 -d start`
@@ -19,15 +17,20 @@ end
 # give the server some time to start
 run "sleep 1"
 
+# opens the web page with the ember.js app
 run "open client" do
   `bundle exec launchy http://localhost:9292/`
 end
 
-parallel do
-  run "rspec"
-  run "cucumber"
+# how unbelievable meta! :)
+run "scripted with websocket formatter" do
+  `bundle exec scripted -f websocket -o http://localhost:9292/faye`
 end
 
+# keep the connection open for just a bit longer
+run "sleep 1"
+
+# forcefully shut down, because websocket connections will cause a timeout anyway
 run "shutdown server" do
   `bundle exec thin -f stop`
   forced!

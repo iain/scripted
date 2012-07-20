@@ -9,7 +9,9 @@ module Scripted
 
     def initialize(name, *groups, &block)
       groups = [:default] if groups.empty?
-      desc "Run scripted groups: #{groups.map(&:to_s).join(', ')}"
+      unless Rake.application.last_description
+        desc "Run scripted groups: #{groups.map(&:to_s).join(', ')}"
+      end
       task name do
         Scripted.configure(&block) if block
         Scripted.configuration.with_default_config_file!
