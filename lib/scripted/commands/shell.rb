@@ -1,11 +1,5 @@
 require 'childprocess'
 
-# These couple of lines should be removed once my Pull Request is merged and released:
-# https://github.com/jarib/childprocess/pull/36
-require 'childprocess/unix'    if ChildProcess.unix?
-require 'childprocess/windows' if ChildProcess.windows?
-require 'childprocess/jruby'   if ChildProcess.jruby?
-
 module Scripted
   module Commands
     class Shell

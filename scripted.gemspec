@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Scripted::VERSION
 
-  gem.add_runtime_dependency "childprocess"
+  gem.add_runtime_dependency "childprocess", ">= 0.3.4"
   gem.add_runtime_dependency "activesupport"
 
   gem.add_development_dependency "rspec"

@@ -1,3 +1,5 @@
+require 'tempfile'
+
 module IOCapture
 
   def with_io
