@@ -1,265 +1,331 @@
 # Scripted
 
-A DSL for running scripts. Really? Is this the best description I can come up with?
+Scripted is a framework for organizing scripts.
 
-Anyway, what makes Scripted different from regular bash scripts, ruby scripts
-or even rake, is that you can determine when to stop the process and you'll get
-a pretty overview of how all your scripts exited.
+Among its features are:
 
-Example configuration:
+* A convenient DSL to determine how and when to run scripts
+* Determine which scripts in parallel with each other
+* Manage the exit status of your scripts
+* A variaty of output formatters, including one that exports the output of the
+  scripts via websockets!
+* Specify groups of tasks
+* Integration with Rake
 
-``` ruby
-run "rspec"
+## Reasoning
 
-run "cucumber"
+It is considered good practice to bundle all the tasks you need to do in one
+script. This can be a setup script that installs your application, or a all
+test scripts combined for your CI to use.
 
-run "javascript" do
-  sh "evergreen run"
-end
-```
+While it is very easy to make this with plain Bash scripts, I found myself
+writing a lot of boiler code over and over again. I wanted to keep track of the
+runtimes of each commands. Or I wanted to run certain scripts in parallel, but
+still wait for them to finish.
 
-When you run this, via the `scripted` command, you'll get an output like this:
+This gem exists because I wanted to simply define which commands to run, and
+not deal with all the boilerplate code every time.
 
-```
-┌────────────┬─────────┬─────────┐
-│ Command    │ Runtime │ Status  │
-├────────────┼─────────┼─────────┤
-│ rspec      │ 13.923s │ success │
-│ cucumber   │ 59.347s │ failed  │
-│ javascript │ 31.003s │ success │
-└────────────┴─────────┴─────────┘
-```
+## Examples
 
-## Installation
+There are a number of examples included in the project. You can find them in
+the `examples` directory.
 
-Add this line to your application's Gemfile:
-
-    gem 'scripted'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install scripted
+* Clone the project
+* Install bundler, if you haven't done so: `gem install bundler`
+* Run `bundle install`
+* See which examples are avaibale: `rake -T examples`
+* Run an example: `rake examples:websockets`
 
 ## Usage
 
-You can define a configuration file, call it `scripted.rb`
+You'll need to create a configuration file for scripted to run. By default this
+file is called `scripted.rb`, but you can name it whatever you like.
+
+After making the configuration, you can run it with the `scripted` executable.
+
+Run `scripted --help` to get an overview of all the options.
+
+### The Basic Command DSL
+
+You can define "commands" via the `run`-method. For instance:
 
 ``` ruby
 run "rspec"
 run "cucumber"
 ```
 
-And then run it:
-
-    $ scripted
-
-To get more options:
-
-    $ scripted --help
-
-## Configuration
-
-A group can contain multiple commands to run. The commands are run in the order they are supplied.
-
-### When to stop the script
-
-By default all commands are run, even if a command fails.
-
-If you want to stop your scripts, when it fails. In the following example,
-Cucumber will not be run if RSpec failed.
+The first argument to the `run`-method is the name of the command. If you don't
+specify anything else, this will be the shell command run. You can change the
+command further by supplying a block.
 
 ``` ruby
-run "rspec" do
-  important!
+run "fast unit specs" do
+  `rspec spec/unit`
 end
-run "cucumber"
-```
 
-You might not care whether a command failed or not:
-
-``` ruby
-run "rm -r tmp" do
-  unimportant!
+run "slow integration specs" do
+  `rspec spec/integration`
 end
 ```
 
-This will not only keep the script running, but also not change the exit status
-of the script in total if the command failed.
-
-Also, you can enforce commands to run:
+You can also specify Rake tasks and Ruby commands to run:
 
 ``` ruby
-run "cleanup" do
-  forced!
-end
-```
-
-### Changing the command
-
-Sometimes the command is too long or ugly to appear on the report. You can change the command:
-
-``` ruby
-run "javascript" do
-  sh "evergreen run"
-end
-```
-
-``` ruby
-run "a command" do
+run "migrate the database" do
   rake "db:migrate"
 end
-```
 
-``` ruby
-run "a command" do
-  rails "server"
-end
-```
-
-You can also run Ruby code:
-
-``` ruby
-run "something nice" do
+run "some ruby code" do
   ruby { 1 + 1 }
 end
 ```
 
-Depending on your Ruby version, this might not work properly when running in parallel.
+### Running scripts in parallel
 
-### Controlling reporting
-
-Sometimes you don't want it to be in your report at all:
+You can really win some time by running certain commands in parallel. Doing
+that is easy, just put them in a `parallel`-block:
 
 ``` ruby
-run "rake clean" do
-  silent!
+run "bundle install"
+
+parallel do
+  run "rspec"
+  run "cucumber"
+end
+
+run "something else"
+```
+
+Commands that come after the parallel block, will wait until all the commands
+that run in parallel have finished.
+
+There are only a few caveats to this. The scripts must be able to run
+simultaniously. If they both access the same global data, like a database or
+files on your hard disk, they will probably fail. Also, any output they produce
+will appear at the same time, possibly making it unreadable.
+
+You can specify multiple parallel blocks.
+
+### Managing exit status
+
+By default, all commands will run, even if one failed. The exit status of the
+entire scripted run will hover reflect that one script has failed.
+
+If one of your commands is so important that other commands cannot possibly
+succeed afterwards, mark it with `important!`:
+
+``` ruby
+run "bundle install" do
+  important!
+end
+
+run "rspec"
+```
+
+If a command might fail, but you don't want the global exit status to change if
+it happens, mark the command with `unimportant!`
+
+``` ruby
+run "flickering tests" do
+  unimportant!
 end
 ```
 
-You can specify the formatter and output:
+If you have some clean up to do, that always must run, even if an important
+command failed, mark it with `forced!`:
 
 ``` ruby
-formatter :table     # the default
-formatter :websocket # can give you real time output in a browser (not provided)
+run "start xvfb" do
+  `/etc/init.d/xvfb start`
+  unimportant! # it might be on already
+end
+
+run "bundle install" do
+  important!
+end
+
+run "rspec"
+
+run "stop xvfb" do
+  `/etc/init.d/xvfb stop`
+  forced!
+end
 ```
 
-You can use multiple formatters, and configure their output individually:
+And finally, to have a command run only if other commands have failed, mark it
+with `only_when_failed!`:
 
 ``` ruby
-formatter :table,     :out => "log/test.log" # defaults to $stderr
-formatter :websocket, :out => "ws://localhost:12345/tests"
+run "mail me if build failed" do
+  only_when_failed!
+end
 ```
 
-You can also specify this during the command line, just like RSpec formatters:
+### Formatters
 
-    $ scripted --format table --out log/test.log --format websocket --out ws://localhost:12345/tests
+Formatters determine what gets outputted. This can be to your screen, a file,
+or a websocket. You can specify the formatters via the command line, or via
+the configuration file.
 
-Or in short form:
+Via the command line:
 
-    $ scripted -ft -fs -o ws://....
+    $ scripted --format my_formatter --out some_file.txt
+
+Via the configuration file:
+
+``` ruby
+formatter :my_formatter, :out => "some_file.txt"
+```
+
+You can have multiple formatters. If you don't specify the `out` option, it
+will send the output to `STDOUT`.
+
+#### The default formatter
+
+The formatter that is used if you don't specify anything is `default`. This
+formatter will output the output of your scripts and display stacktraces. If
+you specify different formatters, the default formatter will not be used. So if
+you still want output to the terminal, you need to add this formatter.
+
+    $ scripted -f default -f some_other_formatter
+
+#### Table formatter
+
+The `table` formatter will display an ASCII table when it's done, giving an
+overview of all commands.
+
+It looks something like this:
+
+```
+┌───────────────────────────────────┬─────────┬─────────┐
+│ Command                           │ Runtime │ Status  │
+├───────────────────────────────────┼─────────┼─────────┤
+│ start server                      │  0.889s │ success │
+│ sleep 1                           │  1.071s │ success │
+│ open client                       │  0.852s │ success │
+│ scripted with websocket formatter │ 26.612s │ success │
+│ sleep 1                           │  1.072s │ success │
+│ shutdown server                   │  2.042s │ success │
+└───────────────────────────────────┴─────────┴─────────┘
+```
+
+#### Announcer formatter
+
+This will print a banner before each command, so you can easily see when a
+command is executed.
+
+It looks something like this:
+
+```
+┌────────────────────────────────────────────────┐
+│                 bundle update                  │
+└────────────────────────────────────────────────┘
+```
+
+#### Stats formatter
+
+The `stats` formatter will print a csv file with the same contents as the
+`table`-formatter. This is handy if you want to keep track of how long your
+test suite takes over time, for example.
+
+
+#### Websocket formatter
+
+And last, but not least, the `websocket` formatter. This awesome formatter will
+publish the output of your commands directly to a websocket.
+
+This is done via [Faye](http://faye.jcoglan.com/), a simple pub/sub messaging
+system. It is tricky to implement this, so be sure to check out the example
+code, which includes a fully functioning Ember.js application.
+
+    $ scripted -f websocket -o http://localhost:9292/faye
+
+Make sure you have Faye running. The example does this for you.
+
+#### Your own formatter
+
+You can also make your own formatter. As the name of the formatter, just
+specify the class name:
+
+    $ scripted -f MyAwesome::Formatter
+
+Have a look at the existing formatters in `lib/scripted/formatters` to see how
+to make one.
 
 ### Groups
 
-You can define groups, and only run a subset:
+You can specify different groups of commands by putting commands in a `group`
+block:
 
 ``` ruby
-group :ci do
-  rake "db:migrate"
+group :test do
   run "rspec"
   run "cucumber"
 end
+
 group :install do
   run "bundle install"
-  run "rake db:migrate"
+  rake "db:setup"
 end
 ```
 
-Specify the group you want when running:
+Then you can specify one or many groups to run on the command line:
 
-    $ scripted -g install,default
+    $ scripted --group install --group test
 
-Commands specified outside groups belong to the `:default` group, just like Bundler.
+Commands that are not defined in any group are put in the `default` group.
 
-### Running in parallel
+### Rake integration
 
-You can make some commands run in parallel:
+Besides calling Rake tasks from Scripted, you can also launch scripted via
+Rake.
 
-``` ruby
-parallel do
-  run "sleep 1"
-  run "sleep 1"
-end
-run "sleep 1"
-```
-
-This script will take just about two seconds to run, instead of three. If you
-mark one of the commands in parallel as important, it will stop as soon as all
-commands that run in parallel exit.
-
-Also note that any output from the commands might get intermingled when they
-both try to access the same output stream.
-
-### Dependencies
-
-You can make group dependent of eachother, similar to Rake.
-
-``` ruby
-group :install do
-  run "bundle install"
-end
-
-group :ci => :install do
-  run "rspec"
-end
-```
-
-Also similar to Rake: dependencies will not run multiple times. Once a group
-has run, it will not run again.
-
-### Integration
-
-To run scripted from within another ruby script:
-
-``` ruby
-require 'scripted'
-
-Scripted.configure do
-  run "rspec"
-  run "cucumber"
-
-  group :install do
-    run "db:migrate"
-  end
-end
-
-Scripted.start! :default, :install # arguments optional
-```
-
-When you go the manual approach, the `scripted.rb` config file will not be loaded.
-
-There is also integration with Rake, which does load the `scripted.rb` file, if it exists.
+The simplest example is:
 
 ``` ruby
 require 'scripted/rake_task'
-Scripted::RakeTask.new(:install)
+Scripted::RakeTask.new(:scripted)
 ```
 
-The first parameter you provide is also the name of the group to be executed.
+Then you can run `rake scripted`
 
-You can further customize it:
+You can pass a block to specify your commands in-line if you like:
 
 ``` ruby
 require 'scripted/rake_task'
 Scripted::RakeTask.new(:install) do
-  formatter :table
-  run "ls"
-  # etc...
+  run "foo"
+  run "bar"
 end
 ```
+
+You can also supply different groups to run:
+
+```
+require 'scripted/rake_task'
+Scripted::RakeTask.new(:ci, :install, :test)
+```
+
+Running `rake :ci` will run both the `install` and `test` group.
+
+## Use cases
+
+I first named this library "test_suite", and most examples show running test
+suites. But Scripted isn't only for running tests. Here are some ideas:
+
+* Installing stuff, like installing stuff you want 
+* Running a command perminantly and seeing the output via websockets. Like
+  ping, your server, or a tool that monitors your worker queue.
+
+## Status of the gem
+
+This gem is in alpha state. YMMV. I believe I got the basic functionality, but
+not everything is as cleanly implemented as it could be.
+
+Please don't hesitate to contact me if you have any questions or ideas for
+improvements. Mention me on [Twitter](https://twitter.com/iain_nl), or open an
+issue on Github.
 
 ## Contributing
 
