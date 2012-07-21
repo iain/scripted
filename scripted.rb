@@ -2,8 +2,6 @@ formatter "default"
 formatter "table"
 formatter "announcer"
 
-`bundle update`
-
 parallel do
 
   run "rspec" do

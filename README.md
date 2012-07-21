@@ -12,6 +12,8 @@ Among its features are:
 * Specify groups of tasks
 * Integration with Rake
 
+See a video of [scripted running with websockets](http://www.youtube.com/watch?v=GMiN0dHtFkg).
+
 ## Reasoning
 
 It is considered good practice to bundle all the tasks you need to do in one
@@ -32,8 +34,7 @@ There are a number of examples included in the project. You can find them in
 the `examples` directory.
 
 * Clone the project
-* Install bundler, if you haven't done so: `gem install bundler`
-* Run `bundle install`
+* Install via `./install`
 * See which examples are avaibale: `rake -T examples`
 * Run an example: `rake examples:websockets`
 
@@ -80,6 +81,9 @@ run "some ruby code" do
   ruby { 1 + 1 }
 end
 ```
+
+Please note that both rake and ruby might have problems when running in
+parellel, especially if you're running on MRI.
 
 ### Running scripts in parallel
 
@@ -198,16 +202,14 @@ overview of all commands.
 It looks something like this:
 
 ```
-┌───────────────────────────────────┬─────────┬─────────┐
-│ Command                           │ Runtime │ Status  │
-├───────────────────────────────────┼─────────┼─────────┤
-│ start server                      │  0.889s │ success │
-│ sleep 1                           │  1.071s │ success │
-│ open client                       │  0.852s │ success │
-│ scripted with websocket formatter │ 26.612s │ success │
-│ sleep 1                           │  1.072s │ success │
-│ shutdown server                   │  2.042s │ success │
-└───────────────────────────────────┴─────────┴─────────┘
+┌─────────────────┬─────────┬─────────┐
+│ Command         │ Runtime │ Status  │
+├─────────────────┼─────────┼─────────┤
+│ rspec           │  0.661s │ success │
+│ cucumber        │ 18.856s │ success │
+│ cucumber -p wip │  0.558s │ success │
+└─────────────────┴─────────┴─────────┘
+  Total runtime: 19.527s
 ```
 
 To use it:
@@ -335,25 +337,57 @@ Scripted::RakeTask.new(:ci, :install, :test)
 
 Running `rake ci` will run both the `install` and `test` group.
 
-## Use cases
+## Some considerations
+
+### Use cases
 
 I first named this library "test_suite", and most examples show running test
 suites. But Scripted isn't only for running tests. Here are some ideas:
 
 * Installing stuff, like installing stuff you want 
 * Running a command perminantly and seeing the output via websockets. Like
-  ping, your server, or a tool that monitors your worker queue.
+  ping, your server, or a tool that monitors your worker queues.
 
-## Status of the gem
+### Complicated setup
+
+The beauty if plain bash scripts is that they can be run without having
+anything installed. The problem with Scripted is that it is a gem and you might
+need to `gem install scripted` or `bundle install` before it will work.
+
+I prefer to have the README of my projects say, something along the lines of:
+
+``` markdown
+## How To
+
+* Install: `script/install`
+* Deploy: `cap deploy`
+```
+
+Nothing more. No complicated 10 step plan, just type one command and you're
+good to go. You need a bash script for that.
+
+So here is an example of how such a bash script might look like:
+
+``` bash
+#!/usr/bin/env bash
+set -e
+gem which scripted >/dev/null 2>&1 || gem install scripted
+scripted --group install
+```
+
+### Status of the gem
 
 This gem is in alpha state. YMMV. I believe I got the basic functionality, but
 not everything is as cleanly implemented as it could be.
 
-Please don't hesitate to contact me if you have any questions or ideas for
-improvements. Mention me on [Twitter](https://twitter.com/iain_nl), or open an
-issue on Github.
+I'm putting this out there to get some feedback. Please don't hesitate to
+contact me if you have any questions or ideas for improvements. Mention me on
+[Twitter](https://twitter.com/iain_nl), or open an issue on Github.
+
 
 ## Contributing
+
+To set it up, just run `./install`.
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -361,9 +395,3 @@ issue on Github.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-To run the tests:
-
-    $ bundle install
-    $ rake
-
-Scripted eats its own dogfood.
