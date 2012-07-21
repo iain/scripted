@@ -4,9 +4,9 @@ require File.expand_path('../lib/scripted/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["iain"]
   gem.email         = ["iain@iain.nl"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Easily specify which scripts to run, which ones to run in parallel, control their exit status and stream their output to a websockt.}
+  gem.summary       = %q{A framework for organizing scripts}
+  gem.homepage      = "https://github.com/iain/scripted"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
