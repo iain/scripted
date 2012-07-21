@@ -210,6 +210,10 @@ It looks something like this:
 └───────────────────────────────────┴─────────┴─────────┘
 ```
 
+To use it:
+
+    $ scripted --format table
+
 #### Announcer formatter
 
 This will print a banner before each command, so you can easily see when a
@@ -223,12 +227,32 @@ It looks something like this:
 └────────────────────────────────────────────────┘
 ```
 
+To use it:
+
+    $ scripted --format announcer
+
 #### Stats formatter
 
 The `stats` formatter will print a csv file with the same contents as the
 `table`-formatter. This is handy if you want to keep track of how long your
 test suite takes over time, for example.
 
+Example:
+
+``` csv
+name,runtime,status
+bundle update,5.583716,success
+rspec,4.319095,success
+cucumber,22.292316,failed
+cucumber -p wip,0.649777,success
+```
+
+To use it:
+
+    $ scripted --format stats --out runtime.csv
+
+Note: make sure you backup the file afterwars, because each time it runs, it
+will override the file.
 
 #### Websocket formatter
 
@@ -242,6 +266,8 @@ code, which includes a fully functioning Ember.js application.
     $ scripted -f websocket -o http://localhost:9292/faye
 
 Make sure you have Faye running. The example does this for you.
+
+See an ![example of the output](https://raw.github.com/iain/scripted/master/examples/websockets.png).
 
 #### Your own formatter
 
@@ -307,7 +333,7 @@ require 'scripted/rake_task'
 Scripted::RakeTask.new(:ci, :install, :test)
 ```
 
-Running `rake :ci` will run both the `install` and `test` group.
+Running `rake ci` will run both the `install` and `test` group.
 
 ## Use cases
 
