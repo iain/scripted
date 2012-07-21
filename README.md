@@ -399,9 +399,8 @@ contact me if you have any questions or ideas for improvements. Mention me on
 
 ### Known issues
 
-* Only works on Ruby 1.9: MRI.
+* Only works on MRI 1.9 and Rubinius in 1.9 mode.
 * JRuby and Ruby 1.8 don't play well with some Unix related stuff.
-* Rubinius doesn't play nice with character encoding of the table and announcer.
 
 ## Contributing
 

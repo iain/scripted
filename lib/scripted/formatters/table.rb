@@ -30,11 +30,11 @@ module Scripted
       private
 
       def separator(widths, left, middle, right)
-        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)) }.join(cyan(middle)) + cyan(right)
+        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)).force_encoding('utf-8') }.join(cyan(middle)) + cyan(right)
       end
 
       def report_line(line, widths)
-        cyan("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ ")) + cyan(" │")
+        cyan("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ ")).force_encoding('utf-8') + cyan(" │")
       end
 
       def report_lines

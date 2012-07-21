@@ -19,9 +19,9 @@ module Scripted
       def execute(command)
         @semaphore.synchronize do
           puts ""
-          puts cyan("┌" + ("─" * (@length - 2)) + "┐")
+          puts cyan("┌" + ("─" * (@length - 2)).force_encoding('utf-8') + "┐")
           puts "#{cyan("│")} #{command.name.center(@length - 4)} #{cyan("│")}"
-          puts cyan("└" + ("─" * (@length - 2)) + "┘")
+          puts cyan("└" + ("─" * (@length - 2)).force_encoding('utf-8') + "┘")
           puts ""
         end
       end
