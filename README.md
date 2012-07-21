@@ -329,7 +329,7 @@ end
 
 You can also supply different groups to run:
 
-```
+``` ruby
 require 'scripted/rake_task'
 Scripted::RakeTask.new(:ci, :install, :test)
 ```
