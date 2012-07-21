@@ -19,7 +19,7 @@ require "scripted/output/logger"
 
 module Scripted
 
-  def self.start!(*group_names)
+  def self.start!(configuration, *group_names)
     Output::Logger.new(configuration) do |logger|
       select_commands = Running::SelectCommands.new(configuration, logger)
       commands = select_commands.commands(group_names)
@@ -29,13 +29,8 @@ module Scripted
     end
   end
 
-  # Configure it, just like in the `scripted.rb` file.
-  def self.configure(*args, &block)
-    configuration.evaluate(*args, &block)
-  end
-
   def self.configuration
-    @configuration ||= Configuration.new
+    Configuration.new
   end
 
 end

@@ -13,10 +13,11 @@ module Scripted
         desc "Run scripted groups: #{groups.map(&:to_s).join(', ')}"
       end
       task name do
-        Scripted.configure(&block) if block
-        Scripted.configuration.with_default_config_file!
-        Scripted.configuration.load_files
-        Scripted.start!(*groups)
+        config = Scripted.configuration
+        config.evaluate(&block) if block
+        config.with_default_config_file!
+        config.load_files
+        Scripted.start!(config, *groups)
       end
     end
 
