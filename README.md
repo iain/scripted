@@ -267,7 +267,7 @@ code, which includes a fully functioning Ember.js application.
 
 Make sure you have Faye running. The example does this for you.
 
-See an ![example of the output](https://raw.github.com/iain/scripted/master/examples/websockets.png).
+![Example of the output](https://raw.github.com/iain/scripted/master/examples/websockets.png)
 
 #### Your own formatter
 
