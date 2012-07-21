@@ -25,7 +25,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "guard-rspec"
   gem.add_development_dependency "ruby_gntp"
   gem.add_development_dependency "fivemat"
-  gem.add_development_dependency "spec_coverage"
   gem.add_development_dependency "thin"
   gem.add_development_dependency "faye"
   gem.add_development_dependency "launchy"

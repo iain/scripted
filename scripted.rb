@@ -7,7 +7,7 @@ formatter "announcer"
 parallel do
 
   run "rspec" do
-    `rspec -f SpecCoverage -f Fivemat`
+    `rspec -f Fivemat`
   end
 
   `cucumber`
