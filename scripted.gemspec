@@ -18,13 +18,14 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "childprocess", ">= 0.3.4"
   gem.add_runtime_dependency "activesupport"
 
+  # For testing
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "cucumber"
   gem.add_development_dependency "aruba"
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "guard-rspec"
-  gem.add_development_dependency "ruby_gntp"
   gem.add_development_dependency "fivemat"
+
+  # For the websockets example
   gem.add_development_dependency "thin"
   gem.add_development_dependency "faye"
   gem.add_development_dependency "launchy"
