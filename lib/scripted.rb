@@ -2,25 +2,27 @@ Thread.abort_on_exception = true
 
 require "scripted/error"
 require "scripted/version"
-require "scripted/output/logger"
-require "scripted/running/select_commands"
-require "scripted/running/run_commands"
 require "scripted/configuration"
+require "scripted/runner"
 
 module Scripted
 
-  def self.start!(configuration, *group_names)
-    Output::Logger.new(configuration) do |logger|
-      select_commands = Running::SelectCommands.new(configuration, logger)
-      commands = select_commands.commands(group_names)
-      run_commands = Running::RunCommands.new(logger)
-      run_commands.run(commands)
-      raise RunningFailed, "One or more commands have failed" if run_commands.failed?
-    end
+  # Runs scripted.
+  #
+  # You can pass a configuration with group names,
+  # or you can pass a block, which will be the ad-hoc configuration.
+  def self.run(configuration = nil, *group_names, &block)
+    raise NotConfigured if configuration.nil? && block.nil?
+    config = configuration || configure(&block)
+    Runner.start!(config, *group_names)
   end
 
-  def self.configuration
-    Configuration.new
+  # Configure scripted, returning a configuration which can be run later.
+  # Optionally pass a block to configure in place.
+  def self.configure(&block)
+    config = Configuration.new
+    config.evaluate(&block) if block_given?
+    config
   end
 
 end

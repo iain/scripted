@@ -4,7 +4,7 @@ require 'scripted'
 require 'optparse'
 require 'set'
 
-config = Scripted.configuration
+config = Scripted.configure
 groups = Set.new
 
 parser = OptionParser.new do |opts|
@@ -19,15 +19,15 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("-r", "--require a,b", Array, "Which files should be loaded") do |file_names|
+  opts.on("-r", "--require a,b", Array, "Which files should be loaded (defaults to `scripted.rb`)") do |file_names|
     config.config_file(*file_names)
   end
 
-  opts.on("-g", "--group a,b", Array, "Which groups to run") do |group_names|
+  opts.on("-g", "--group a,b", Array, "Which groups to run (defaults to `:default`)") do |group_names|
     groups += group_names
   end
 
-  opts.on("-f", "--format name", "Specify a formatter") do |formatter|
+  opts.on("-f", "--format name", "Specify a formatter (defaults to `default`)") do |formatter|
     config.formatter formatter
   end
 
@@ -35,7 +35,7 @@ parser = OptionParser.new do |opts|
     config.out out
   end
 
-  opts.on("-c", "--[no-]color", "Use color in formatters?") do |color|
+  opts.on("-c", "--[no-]color", "Use color in formatters? (defaults to yes)") do |color|
     config.color = color
   end
 
@@ -49,13 +49,18 @@ begin
   parser.parse!
   config.with_default_config_file!
   config.load_files
-rescue OptionParser::InvalidOption, Scripted::ConfigurationError => error
+rescue OptionParser::InvalidOption => error
+  puts error
+  puts ""
+  puts parser
+  exit 1
+rescue Scripted::ConfigurationError => error
   puts "#{error} at #{error.backtrace.first}"
   exit 1
 end
 
 begin
-  Scripted.start! config, *groups
+  Scripted.run config, *groups
 rescue Scripted::RunningFailed => error
   puts error
   exit 1

@@ -337,6 +337,17 @@ Scripted::RakeTask.new(:ci, :install, :test)
 
 Running `rake ci` will run both the `install` and `test` group.
 
+### Ruby integration
+
+Calling scripted from within another Ruby process is easy:
+
+``` ruby
+require 'scripted'
+Scripted.run do
+  run "something"
+end
+```
+
 ## Some considerations
 
 ### Use cases
@@ -378,7 +389,9 @@ scripted --group install
 ### Status of the gem
 
 This gem is in alpha state. YMMV. I believe I got the basic functionality, but
-not everything is as cleanly implemented as it could be.
+not everything is as cleanly implemented as it could be. For instance, there
+are undoubtedly edge cases I didn't think of and error handling can probably be
+more user friendly.
 
 I'm putting this out there to get some feedback. Please don't hesitate to
 contact me if you have any questions or ideas for improvements. Mention me on

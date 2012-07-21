@@ -7,4 +7,7 @@ module Scripted
 
   class CommandFailed < Error
   end
+
+  class NotConfigured < Error
+  end
 end
