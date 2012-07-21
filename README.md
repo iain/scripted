@@ -367,11 +367,12 @@ need to `gem install scripted` or `bundle install` before it will work.
 
 I prefer to have the README of my projects say, something along the lines of:
 
-``` markdown
+``` md
 ## How To
 
 * Install: `script/install`
-* Deploy: `cap deploy`
+* Upgrade: `script/upgrade`
+* Deploy: `script/deploy`
 ```
 
 Nothing more. No complicated 10 step plan, just type one command and you're
