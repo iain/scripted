@@ -1,3 +1,6 @@
+require 'scripted/commands/shell'
+require 'scripted/commands/ruby'
+
 module Scripted
   module Commands
     class Rake

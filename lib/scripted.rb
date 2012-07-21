@@ -2,20 +2,10 @@ Thread.abort_on_exception = true
 
 require "scripted/error"
 require "scripted/version"
-require "scripted/group"
-require "scripted/command"
-require "scripted/configuration"
-
-require "scripted/commands/shell"
-require "scripted/commands/rake"
-require "scripted/commands/ruby"
-
+require "scripted/output/logger"
 require "scripted/running/select_commands"
 require "scripted/running/run_commands"
-require "scripted/running/run_command"
-require "scripted/running/execute"
-
-require "scripted/output/logger"
+require "scripted/configuration"
 
 module Scripted
 

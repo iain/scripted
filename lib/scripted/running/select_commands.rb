@@ -1,3 +1,5 @@
+require "scripted/running/run_command"
+
 module Scripted
   module Running
     class SelectCommands

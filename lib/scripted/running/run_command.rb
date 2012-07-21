@@ -1,3 +1,5 @@
+require "scripted/running/execute"
+
 module Scripted
   module Running
     class RunCommand

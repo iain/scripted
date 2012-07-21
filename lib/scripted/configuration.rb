@@ -1,3 +1,6 @@
+require "scripted/error"
+require "scripted/group"
+
 module Scripted
 
   class ConfigurationError       < Error;              end

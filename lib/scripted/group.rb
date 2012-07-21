@@ -1,3 +1,5 @@
+require "scripted/command"
+
 module Scripted
   class Group
 
