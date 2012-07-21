@@ -30,7 +30,7 @@ module Scripted
       private
 
       def separator(widths, left, middle, right)
-        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)).force_encoding('utf-8') }.join(cyan(middle)) + cyan(right)
+        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)) }.join(cyan(middle)) + cyan(right)
       end
 
       def report_line(line, widths)

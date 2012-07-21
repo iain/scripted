@@ -1,5 +1,7 @@
 # Scripted
 
+[![Build Status](https://secure.travis-ci.org/iain/scripted.png?branch=master)](http://travis-ci.org/iain/scripted)
+
 Scripted is a framework for organizing scripts.
 
 Among its features are:
@@ -81,9 +83,6 @@ run "some ruby code" do
   ruby { 1 + 1 }
 end
 ```
-
-Please note that both rake and ruby might have problems when running in
-parellel, especially if you're running on MRI.
 
 ### Running scripts in parallel
 
@@ -398,6 +397,11 @@ I'm putting this out there to get some feedback. Please don't hesitate to
 contact me if you have any questions or ideas for improvements. Mention me on
 [Twitter](https://twitter.com/iain_nl), or open an issue on Github.
 
+### Known issues
+
+* Only works on Ruby 1.9: MRI.
+* JRuby and Ruby 1.8 don't play well with some Unix related stuff.
+* Rubinius doesn't play nice with character encoding of the table and announcer.
 
 ## Contributing
 

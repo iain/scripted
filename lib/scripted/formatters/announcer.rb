@@ -1,5 +1,6 @@
 # encoding: utf-8
 require "scripted/formatters/blank"
+require 'thread'
 
 module Scripted
   module Formatters
