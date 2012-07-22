@@ -15,7 +15,7 @@ module Scripted
 
       def run(commands)
         logged commands do
-          commands.group_by(&:parallel_id).each do |parallel_id, parallel_commands|
+          per_parallel_id commands do |parallel_commands|
             threads = []
             parallel_commands.each do |command|
               if should_execute?(command)
@@ -60,6 +60,15 @@ module Scripted
       end
 
       private
+
+      # these are re-sorted, because in Ruby 1.8, hashes aren't sorted
+      def per_parallel_id(commands)
+        commands.group_by(&:parallel_id).values.sort_by { |commands|
+          commands.first.parallel_id
+        }.each { |commands|
+          yield commands
+        }
+      end
 
       def logged(commands)
         @started_at = Time.now

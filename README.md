@@ -84,6 +84,9 @@ run "some ruby code" do
 end
 ```
 
+Keep in mind that MRI has trouble running ruby and rake tasks in parallel due
+to the GIL.
+
 ### Running scripts in parallel
 
 You can really win some time by running certain commands in parallel. Doing
@@ -105,7 +108,7 @@ that run in parallel have finished.
 
 There are only a few caveats to this. The scripts must be able to run
 simultaniously. If they both access the same global data, like a database or
-files on your hard disk, they will probably fail. Also, any output they produce
+files on your hard disk, they will probably fail. Any output they produce
 will appear at the same time, possibly making it unreadable.
 
 You can specify multiple parallel blocks.
@@ -400,11 +403,10 @@ contact me if you have any questions or ideas for improvements. Mention me on
 
 ### Known issues
 
-* Works on MRI 1.9 and Rubinius in 1.9 mode.
+* Works on MRI and Rubinius.
 * JRuby might have problems running shell commands.
 * JRuby doesn't always allow you to compile C extensions, so you cannot install
   Faye. Use a different Ruby implementation or use the Node.js version.
-* Ruby 1.8 won't run commands in the right order, because of unsorted hashes.
 * To get color in RSpec, use the `--tty` switch, or RSpec will not believe the
   shell supports color.
 * Use the `--color` switch for Cucumber.

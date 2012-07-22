@@ -62,12 +62,8 @@ module Scripted
       !!@forced
     end
 
-    def parallel?
-      !!@options[:parallel]
-    end
-
     def parallel_id
-      @parallel_id ||= (@options[:parallel] || Object.new).object_id
+      @options[:parallel_id]
     end
 
     def run_in_parallel_with?(other)

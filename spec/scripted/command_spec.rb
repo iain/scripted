@@ -65,8 +65,8 @@ describe Scripted::Command do
   end
 
   it "can be parallel" do
-    command = Scripted::Command.new("true", :parallel => Object.new)
-    expect(command).to be_parallel
+    command = Scripted::Command.new("true", :parallel_id => 10)
+    expect(command.parallel_id).to eq 10
   end
 
 end

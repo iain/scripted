@@ -7,6 +7,8 @@ module Scripted
 
     def initialize(name)
       @name = name
+      @parallel = false
+      @parallel_id = (object_id ** 2)
     end
 
     def define(&block)
@@ -14,17 +16,33 @@ module Scripted
     end
 
     def run(name, &block)
-      commands << Command.new(name, :parallel => @parallel, &block)
+      next_parallel_id unless in_parallel?
+      commands << Command.new(name, :parallel_id => parallel_id, &block)
     end
 
     def parallel(&block)
-      @parallel = Object.new
+      @parallel = true
       yield
-      @parallel = nil
+      @parallel = false
+      next_parallel_id
     end
 
     def commands
       @commands ||= []
+    end
+
+    private
+
+    def parallel_id
+      @parallel_id
+    end
+
+    def next_parallel_id
+      @parallel_id += 1
+    end
+
+    def in_parallel?
+      @parallel
     end
 
   end
