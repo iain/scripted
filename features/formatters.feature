@@ -122,3 +122,21 @@ Feature: Formatters
     """
     I am now starting true
     """
+
+  Scenario: Custom Formatter in the configuration
+    Given the configuration:
+    """
+    require 'scripted/formatters/blank'
+    class MyFormatter < Scripted::Formatters::Blank
+      def execute(command)
+        puts "I am now starting #{command.name}"
+      end
+    end
+    formatter MyFormatter
+    run "true"
+    """
+    When I run `scripted`
+    Then it should pass with:
+    """
+    I am now starting true
+    """
