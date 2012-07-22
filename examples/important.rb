@@ -2,6 +2,15 @@ formatter :table
 formatter :announcer
 formatter :default
 
+run "an unimportant failing command" do
+  `false`
+  unimportant!
+end
+
+run "a normal command" do
+  `echo You should see this output`
+end
+
 run "an important failing command" do
   `false`
   important!
@@ -16,7 +25,7 @@ run "a forced command" do
   forced!
 end
 
-run "a command that executes because the second command failed" do
+run "this runs because it failed" do
   `true`
   only_when_failed!
 end

@@ -84,7 +84,13 @@ module Scripted
       end
 
       def should_execute?(command)
-        (!halted? || command.forced?) && (!command.only_when_failed? || (failed? && command.only_when_failed?))
+        if halted?
+          command.forced? or command.only_when_failed?
+        elsif failed?
+          true
+        else
+          not command.only_when_failed?
+        end
       end
 
     end
