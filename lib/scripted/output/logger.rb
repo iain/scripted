@@ -1,4 +1,3 @@
-require 'active_support/core_ext/string/inflections'
 require 'scripted/output/command_logger'
 
 module Scripted
@@ -71,20 +70,68 @@ module Scripted
           formatter_names = [ {:name => "default"} ]
         end
         formatters = formatter_names.uniq { |fn| fn[:name] }.map do |formatter|
-          find_formatter(formatter[:name]).new(formatter.fetch(:out, STDERR), configuration)
+          find_formatter(formatter.fetch(:name)).new(formatter.fetch(:out, STDERR), configuration)
         end
         formatters
       end
 
       def find_formatter(name)
-        name = name.to_s
-        if name =~ /^[A-Z]/
-          require name.underscore
-          name.constantize
-        else
-          require "scripted/formatters/#{name}"
-          "Scripted::Formatters::#{name.camelize}".constantize
+        built_in_formatter(name) || custom_formatter(name)
+      end
+
+      def built_in_formatter(formatter_ref)
+        case formatter_ref.to_s.downcase
+        when 'announcer', 'a', 'ann', 'announce'
+          require 'scripted/formatters/announcer'
+          Scripted::Formatters::Announcer
+        when 'blank'
+          require 'scripted/formatters/blank'
+          Scripted::Formatters::Blank
+        when 'default', 'd'
+          require 'scripted/formatters/default'
+          Scripted::Formatters::Default
+        when 'table', 't'
+          require 'scripted/formatters/table'
+          Scripted::Formatters::Table
+        when 'stats', 's', 'stat'
+          require 'scripted/formatters/stats'
+          Scripted::Formatters::Stats
+        when 'websockets', 'w', 'web', 'websocket'
+          require 'scripted/formatters/websocket'
+          Scripted::Formatters::Websocket
         end
+      end
+
+      def custom_formatter(formatter_ref)
+        if Class === formatter_ref
+          formatter_ref
+        elsif string_const?(formatter_ref)
+          begin
+            eval(formatter_ref)
+          rescue NameError
+            require path_for(formatter_ref)
+            eval(formatter_ref)
+          end
+        end
+      end
+
+      def string_const?(str)
+        str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
+      end
+
+      def path_for(const_ref)
+        underscore(const_ref)
+      end
+
+      # activesupport/lib/active_support/inflector/methods.rb, line 48
+      def underscore(camel_cased_word)
+        word = camel_cased_word.to_s.dup
+        word.gsub!(/::/, '/')
+        word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+        word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+        word.tr!("-", "_")
+        word.downcase!
+        word
       end
 
     end

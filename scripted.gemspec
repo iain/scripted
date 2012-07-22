@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = Scripted::VERSION
 
   gem.add_runtime_dependency "childprocess", ">= 0.3.4"
-  gem.add_runtime_dependency "activesupport"
 
   # For testing
   gem.add_development_dependency "rspec"
