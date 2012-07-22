@@ -1,2 +1,3 @@
 default: --format Fivemat --strict --tags ~@wip --color
 wip: --format pretty --wip --tags @wip --color
+no-color: --format Fivemat --strict --tags ~@wip

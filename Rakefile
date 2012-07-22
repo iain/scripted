@@ -31,4 +31,9 @@ namespace :examples do
     config_file "examples/important.rb"
   end
 
+  desc "Runs the pride example"
+  Scripted::RakeTask.new(:pride) do
+    config_file "examples/pride.rb"
+  end
+
 end
