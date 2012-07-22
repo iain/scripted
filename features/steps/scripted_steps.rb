@@ -11,9 +11,9 @@ Given /^the configuration:$/ do |string|
 end
 
 Then /^it should have taken about (\d+) seconds$/ do |seconds|
-  real = /\bTotal runtime: (\d+\.\d+)s\b/.match(all_output) { |m| m[1].to_f }
-  expect(real).to be_a(Float), "Couldn't find real time in output:\n\n#{all_output}"
-  expect(real).to be_within(0.5).of(seconds.to_f)
+  last_line = all_output.split("\n").reject { |line| line =~ /^\s*$/ }.last.strip
+  total = /Total runtime: (\d+\.\d+)s/.match(last_line)
+  expect(total[1].to_f).to be_within(0.5).of(seconds.to_f)
 end
 
 When /^I run scripted$/ do

@@ -253,7 +253,8 @@ To use it:
     $ scripted --format stats --out runtime.csv
 
 Note: make sure you backup the file afterwars, because each time it runs, it
-will override the file.
+will override the file. Also, if you're running on Ruby 1.8, you'll have to
+install FasterCSV.
 
 #### Websocket formatter
 
@@ -399,8 +400,14 @@ contact me if you have any questions or ideas for improvements. Mention me on
 
 ### Known issues
 
-* Only works on MRI 1.9 and Rubinius in 1.9 mode.
-* JRuby and Ruby 1.8 don't play well with some Unix related stuff.
+* Works on MRI 1.9 and Rubinius in 1.9 mode.
+* JRuby might have problems running shell commands.
+* JRuby doesn't always allow you to compile C extensions, so you cannot install
+  Faye. Use a different Ruby implementation or use the Node.js version.
+* Ruby 1.8 won't run commands in the right order, because of unsorted hashes.
+* To get color in RSpec, use the `--tty` switch, or RSpec will not believe the
+  shell supports color.
+* Use the `--color` switch for Cucumber.
 
 ## Contributing
 

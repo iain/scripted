@@ -1,7 +1,7 @@
 Thread.abort_on_exception = true
 
 require "scripted/error"
-require "scripted/version"
+require "scripted/version" unless defined?(Scripted::VERSION)
 require "scripted/configuration"
 require "scripted/runner"
 

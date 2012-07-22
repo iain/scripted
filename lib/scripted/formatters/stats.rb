@@ -1,11 +1,18 @@
-require 'csv'
 require "scripted/formatters/blank"
 require 'scripted/formatters/human_status'
+
 
 module Scripted
   module Formatters
     class Stats < Blank
       include HumanStatus
+
+      begin
+        require 'fastercsv'
+        CSV = FasterCSV
+      rescue LoadError
+        require 'csv'
+      end
 
       def stop(commands, runner)
         if out.is_a?(File)

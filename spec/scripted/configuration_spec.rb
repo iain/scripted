@@ -29,12 +29,12 @@ describe Scripted::Configuration do
   end
 
   it "changes the last formatter to use a different output" do
-    subject.formatter :table, out: "old.log"
+    subject.formatter :table, :out => "old.log"
     expect { subject.out "new.log" }.to change { subject.formatters.first[:out] }.to "new.log"
   end
 
   it "can set multple formatter" do
-    subject.formatter :table, out: "old.log"
+    subject.formatter :table, :out => "old.log"
     subject.formatter :websocket
     expect(subject).to have(2).formatters
   end

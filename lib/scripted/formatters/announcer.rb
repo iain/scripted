@@ -19,10 +19,18 @@ module Scripted
       def execute(command)
         @semaphore.synchronize do
           puts ""
-          puts cyan("┌" + ("─" * (@length - 2)).force_encoding('utf-8') + "┐")
+          puts cyan("┌" + ("─" * force_encoding(@length - 2)) + "┐")
           puts "#{cyan("│")} #{command.name.center(@length - 4)} #{cyan("│")}"
-          puts cyan("└" + ("─" * (@length - 2)).force_encoding('utf-8') + "┘")
+          puts cyan("└" + ("─" * force_encoding(@length - 2)) + "┘")
           puts ""
+        end
+      end
+
+      def force_encoding(text)
+        if text.respond_to?(:force_encoding)
+          text.force_encoding('utf-8')
+        else # ruby 1.8
+          text
         end
       end
 

@@ -30,15 +30,23 @@ module Scripted
       private
 
       def separator(widths, left, middle, right)
-        cyan(left) + widths.map { |width| (cyan("─") * (width + 2)).force_encoding('utf-8') }.join(cyan(middle)) + cyan(right)
+        cyan(left) + widths.map { |width| force_encoding(cyan("─") * (width + 2)) }.join(cyan(middle)) + cyan(right)
       end
 
       def report_line(line, widths)
-        cyan("│ ") + line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ ")).force_encoding('utf-8') + cyan(" │")
+        cyan("│ ") + force_encoding(line.zip(widths).map { |(column, width)| column.aligned(width) }.join(cyan(" │ "))) + cyan(" │")
       end
 
       def report_lines
         @report_lines ||= []
+      end
+
+      def force_encoding(text)
+        if text.respond_to?(:force_encoding)
+          text.force_encoding('utf-8')
+        else # ruby 1.8
+          text
+        end
       end
 
       class Column
