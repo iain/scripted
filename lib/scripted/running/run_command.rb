@@ -96,6 +96,10 @@ module Scripted
         command.name
       end
 
+      def only_when_success?
+        command.only_when_success?
+      end
+
     end
   end
 end

@@ -87,7 +87,7 @@ module Scripted
         if halted?
           command.forced? or command.only_when_failed?
         elsif failed?
-          true
+          not command.only_when_success?
         else
           not command.only_when_failed?
         end

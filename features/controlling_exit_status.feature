@@ -42,17 +42,6 @@ Feature: Controlling Exit Status
   end
   ```
 
-  If the run did fail, you might want to do some extra work, like sending an
-  email. You can mark those with `only_when_failed!`.
-
-  ``` ruby
-  run "email" do
-    `mail -s Failure you@example.org`
-    only_when_failed!
-  end
-  ```
-
-
   Scenario: Having failing commands
     Given the configuration:
     """
@@ -98,27 +87,3 @@ Feature: Controlling Exit Status
     """
     When I run scripted
     Then it should pass
-
-  Scenario: Only when failed with a failing command
-    Given the configuration:
-    """
-    run "false"
-    run "echo only when failed has run" do
-      only_when_failed!
-    end
-    """
-    When I run scripted
-    Then it should fail
-    And the output should contain "only when failed has run"
-
-  Scenario: Only when failed when nothing failed
-    Given the configuration:
-    """
-    run "true"
-    run "echo only when failed has run" do
-      only_when_failed!
-    end
-    """
-    When I run scripted
-    Then it should pass
-    And the output should not contain "only when failed has run"

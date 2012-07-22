@@ -145,6 +145,18 @@ describe Scripted::Running::RunCommands do
       expect(run_commands).to be_failed
     end
 
+    it "executes only_when_success-commands when no other command failed" do
+      command1 = run_command(:failed? => true)
+      command2 = run_command(:only_when_success? => true)
+
+      run_commands.run [ command1, command2 ]
+
+      expect(command1).to be_executed
+      expect(command2).not_to be_executed
+
+      expect(run_commands).to be_failed
+    end
+
   end
 
 end

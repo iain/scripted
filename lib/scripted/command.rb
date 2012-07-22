@@ -78,5 +78,13 @@ module Scripted
       @only_when_failed = true
     end
 
+    def only_when_success!
+      @only_when_success = true
+    end
+
+    def only_when_success?
+      !!@only_when_success
+    end
+
   end
 end

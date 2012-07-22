@@ -64,6 +64,12 @@ describe Scripted::Command do
     expect(command).to be_only_when_failed
   end
 
+  it "can be only when success" do
+    expect(command).not_to be_only_when_success
+    command.only_when_success!
+    expect(command).to be_only_when_success
+  end
+
   it "can be parallel" do
     command = Scripted::Command.new("true", :parallel_id => 10)
     expect(command.parallel_id).to eq 10

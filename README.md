@@ -9,6 +9,7 @@ Among its features are:
 * A convenient DSL to determine how and when to run scripts
 * Determine which scripts in parallel with each other
 * Manage the exit status of your scripts
+* Conditionally run certain commands
 * A variaty of output formatters, including one that exports the output of the
   scripts via websockets!
 * Specify groups of tasks
@@ -159,8 +160,21 @@ run "stop xvfb" do
 end
 ```
 
-And finally, to have a command run only if other commands have failed, mark it
-with `only_when_failed!`:
+### Conditionally run certain commands
+
+There are two types of commands that can be run conditionally.
+
+To run a command only when all previous commands were successful, mark it with
+`only_when_success!`:
+
+``` ruby
+run "mail me if everything went ok" do
+  only_when_success!
+end
+```
+
+To have a command run only if other commands have failed, mark it with
+`only_when_failed!`:
 
 ``` ruby
 run "mail me if build failed" do
