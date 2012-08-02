@@ -97,7 +97,6 @@ module Scripted
           :halted                 => command.halted?,
           :executed               => command.executed?,
           :only_when_failed       => command.only_when_failed?,
-          :parallel               => command.parallel?,
           :parallel_id            => command.parallel_id,
           :failed_but_unimportant => command.failed_but_unimportant?,
           :unimportant            => command.unimportant?,

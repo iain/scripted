@@ -50,6 +50,8 @@ After making the configuration, you can run it with the `scripted` executable.
 
 Run `scripted --help` to get an overview of all the options.
 
+Also, have a look at the Cucumber features for more information.
+
 ### The Basic Command DSL
 
 You can define "commands" via the `run`-method. For instance:
@@ -415,6 +417,12 @@ I'm putting this out there to get some feedback. Please don't hesitate to
 contact me if you have any questions or ideas for improvements. Mention me on
 [Twitter](https://twitter.com/iain_nl), or open an issue on Github.
 
+Some possible future features:
+
+* Include groups from within other groups.
+* Specify a working directory.
+* Define exit status, like `important!` for multiple commands at once.
+
 ### Known issues
 
 * Works on MRI and Rubinius.
@@ -424,6 +432,7 @@ contact me if you have any questions or ideas for improvements. Mention me on
 * To get color in RSpec, use the `--tty` switch, or RSpec will not believe the
   shell supports color.
 * Use the `--color` switch for Cucumber.
+* Groups don't run in the specified order yet.
 
 ## Contributing
 

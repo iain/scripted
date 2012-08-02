@@ -80,10 +80,6 @@ module Scripted
         command.parallel_id
       end
 
-      def parallel?
-        command.parallel?
-      end
-
       def only_when_failed?
         command.only_when_failed?
       end
